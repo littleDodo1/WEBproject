@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Посоветовать книгу или фильм онлайн</title>
+    <link rel="stylesheet" href="{% static 'pitle/css/main_page.css' %}">
+</head>
+<body>
+    <header class="shapka">
+        <div class="logo"><h1>logo</h1></div>
+        <div class="logo_1">
+            <img src="{% static 'pitle/img/icon.webp' %}" width="55" height="55" alt="Иконка профиля">
+        </div>
+    </header>
+
+    <nav class="site-links">
+        <a href="info_about_us.html">О нашей команде</a>
+        <a href="about_create_site.html">О создании сайта</a>
+    </nav>
+
+    <main class="main">
+        <div class="hello">
+            <h1>Привет! Подберем подходящие <strong><em>именно тебе</em></strong> книгу или фильм?</h1>
+            <h1>Лучшие книги и фильмы именно у нас на сайте!</h1>
+        </div>
+        <form action="{% url 'login' %}" method="get">
+            <button class="btn">Конечно, поехали!</button>
+        </form>
+    </main>
+</body>
+</html>
