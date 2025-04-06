@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Посоветовать книгу или фильм онлайн</title>
+    <link rel="stylesheet" href="main_page.css">
+</head>
+<body>
+    <header class="shapka">
+        <div class="logo"><h1>logo</h1></div>
+        <div class="logo_1">
+            <img src="profile_fon.webp" width="55" height="55" alt="Иконка профиля">
+        </div>
+    </header>
+
+    <nav class="site-links">
+        <a href="info_about_us.html">О нашей команде</a>
+        <a href="info_about_us.html">О создании сайта</a>
+    </nav>
+
+    <main class="main">
+        <div class="hello">
+            <h1 class="typewriter">Привет! Подберем подходящие <strong><em>именно тебе</em></strong> книгу или фильм?</h1>
+            <h1 class="typewriter" style="animation-delay: 3.5s">Лучшие книги и фильмы именно у нас на сайте!</h1>
+        </div>
+        <form action="login-password.html" method="get">
+            <button class="btn">Конечно, поехали!</button>
+        </form>
+    </main>
+
+    <script>
+        // Альтернативный вариант с JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const texts = [
+                "Привет! Подберем подходящие именно тебе книгу или фильм?",
+                "Лучшие книги и фильмы только у нас на сайте!"
+            ];
+            const helloDiv = document.querySelector('.hello');
+            
+            // Очищаем содержимое
+            helloDiv.innerHTML = '';
+            
+            // Функция печати текста
+            function typeWriter(text, index, element, speed = 50) {
+                if (index < text.length) {
+                    element.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(() => typeWriter(text, index, element, speed), speed);
+                }
+            }
+            
+            // Создаем элементы и запускаем анимацию
+            texts.forEach((text, i) => {
+                const h1 = document.createElement('h1');
+                helloDiv.appendChild(h1);
+                setTimeout(() => {
+                    typeWriter(text, 0, h1);
+                }, i * 3300); // Задержка между строками
+            });
+        });
+    </script>
+</body>
+</html>
