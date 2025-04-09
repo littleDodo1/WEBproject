@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.logo{
+    width: 10%;
+}
+
 body {
     background-color: rgba(245, 205, 154, 0.86);
     font-size: 16px;
