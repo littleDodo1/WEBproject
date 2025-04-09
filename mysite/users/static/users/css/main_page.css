@@ -14,8 +14,12 @@ body {
     background-attachment: fixed;
 }
 
-.logo {
-    padding: 30px 0 0 10px;
+.logo_1 {
+    padding: 40px 0px 0px 100px;
+}
+
+.profile_pic{
+    padding: 40px 100px 0px 0px;
 }
 
 .hello{
@@ -27,32 +31,32 @@ body {
 }
 
 .btn {
-    background-color: #AC4C0C;
-    border: none;
-    color: white;
-    padding: 16px 40px;
-    text-align: center;
-    font-size: 16px;
-    display: block;
-    margin: 0 auto; /* Центрирование */
-    width: fit-content; /* Ширина по содержимому */
-    opacity: 1;
-    transition: 0.3s;
-    cursor:pointer;
-  }
-  
-  .btn:hover {opacity: 0.6}
+     background-color: #AC4C0C;
+     border: none;
+     color: white;
+     padding: 16px 40px;
+     text-align: center;
+     font-size: 16px;
+     display: block;
+     margin: 0 auto; /* Центрирование */
+     width: fit-content; /* Ширина по содержимому */
+     opacity: 1;
+     transition: 0.3s;
+     cursor:pointer;
+}
+
+.btn:hover {opacity: 0.6}
 
 
 .about-us {
     color: antiquewhite;
-    text-align: center; 
+    text-align: center;
     padding-right: 30px;
     font-size: 20px;
 }
 
 .about-us a {
-    text-decoration: none; 
+    text-decoration: none;
     color: antiquewhite;
     font-weight: bold;
 }
@@ -70,7 +74,7 @@ body {
 
 .about-create{
     color: antiquewhite;
-    text-align: center; 
+    text-align: center;
     padding-right: 20px;
     padding-top: 110px;
     font-size: 20px;
@@ -78,7 +82,7 @@ body {
 
 
 .about-create a {
-    text-decoration: none; 
+    text-decoration: none;
     color: antiquewhite;
     font-weight: bold;
 }
@@ -103,7 +107,7 @@ body {
     gap: 20px;
     padding: 20px 0;
     a{
-        text-decoration: none; 
+        text-decoration: none;
         color: antiquewhite;
         font-weight: bold;
     }
