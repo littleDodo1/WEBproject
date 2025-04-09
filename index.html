@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="shapka">
-        <div class="logo"><h1>logo</h1></div>
+        <img src="Лого проект питон.png" alt="logotip" class="logo">
         <div class="logo_1">
             <img src="profile_fon.webp" width="55" height="55" alt="Иконка профиля">
         </div>
@@ -33,7 +33,8 @@
         // Альтернативный вариант с JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const texts = [
-                "Привет! Подберем подходящие именно тебе книгу или фильм?",
+                "Привет!",
+                "Подберем подходящую именно тебе книгу или фильм?",
                 "Лучшие книги и фильмы только у нас на сайте!"
             ];
             const helloDiv = document.querySelector('.hello');
@@ -56,7 +57,7 @@
                 helloDiv.appendChild(h1);
                 setTimeout(() => {
                     typeWriter(text, 0, h1);
-                }, i * 3300); // Задержка между строками
+                }, i * 1200); // Задержка между строками
             });
         });
     </script>
