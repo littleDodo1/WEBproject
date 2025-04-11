@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все про нас!</title>
+    <link rel="stylesheet" href="{% static 'users/css/about.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img src="{% static 'users/img/logo.png' %}" alt="logotip" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="{% url 'index' %}">Главная</a></li>
+                    <li><a href="">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="main">
+        <div class="container">
+            <div class="col-1-3">
+                <img src="{% static 'users/img/i.webp' %}" alt="МАИ" class="fotomai">
+            </div>
+            <div class="col-2-3">
+                <h1>МАИ - ЭТО Я!</h1>
+                <h1>МАИ - ЭТО МЫ!</h1>
+                <h1>МАИ - ЭТО ЛУЧШИЕ ЛЮДИ СТРАНЫ!</h1>
+            </div>
+            <div class="col-1-2">
+                <h1>О НАШЕЙ КОМАНДЕ</h1>
+                <br>
+                <h2>Мы — команда первокурсников МАИ, которые решили превратить учебный проект в полезный сервис. Хотя мы только начинаем свой путь в веб-разработке, нам хотелось создать место, где каждый сможет найти свою следующую любимую книгу или фильм.</h2>
+            </div>
+            <div class="col-1-2">
+                <h1>О проекте</h1>
+                <br>
+                <h2>Идея этого сайта родилась из нашего собственного интереса к литературе и кинематографу. Мы понимаем, как бывает сложно выбрать, что почитать или посмотреть, поэтому постарались сделать простой и удобный инструмент для поиска интересных произведений.
+                </h2>
+                <h2>
+                    Сейчас мы активно развиваем проект, добавляя новые функции и улучшая существующие. Ваши отзывы и пожелания помогут нам сделать сервис ещё лучше. Давайте создавать уютное сообщество любителей хороших книг и фильмов вместе!
+                </h2>
+                <h2>
+                    P.S. Если заметите какие-то недочёты — не стесняйтесь нам сообщить. Мы только учимся и будем благодарны за помощь!
+                </h2>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <img src="{% static 'users/vid/9IeI.gif' %}" alt="dinozavrik luv u <3" class="loving">
+            <br>
+            <br>
+            <h4>мы вас очень любим!!! <3</h4>
+        </div>
+    </footer>
+</body>
+</html>

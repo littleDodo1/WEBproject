@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+
 *{
     margin: 0;
     padding: 0;
@@ -13,7 +14,7 @@ body{
     align-items: center;
     min-height: 100vh;
     background:transparent;
-    background: url("vid/007_03.mp4");
+    background: url("007_03.mp4");
     background-size: cover;
 }
 
@@ -70,6 +71,7 @@ body{
     display: flex;
     justify-content: space-between;
     font-size: 14.5px;
+    padding-top: 20%;
     margin: -15px 0 15px;
 }
 
@@ -130,3 +132,11 @@ body{
     height: auto;
     z-index: -9999;
   }
+
+  .form-error {
+    color: #ff3860;
+    font-size: 0.8em;
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+
