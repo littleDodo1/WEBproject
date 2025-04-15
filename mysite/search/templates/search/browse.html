@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Каталог</title>
+  <link rel="stylesheet" href="{% static 'search/css/browse.css' %}">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="{% url 'search:browse' %}">
+        <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+      </a>
+    </div>
+    <div class="search-container">
+      <form action="{% url 'search:results' %}" method="get">
+        <label for="type-select">Я ищу:</label>
+        <select id="type-select" class="type-select" name="search_type">
+          <option value="movie">фильм</option>
+          <option value="book">книгу</option>
+        </select>
+        <div class="search-box">
+          <input type="text" placeholder="Поиск..." name="search_query">
+          <button type="submit">🔍</button>
+        </div>
+      </form>
+      <a href="{% url 'search:search_page' %}">
+        <button class="advanced-button">Поиск по параметрам</button>
+      </a>
+    </div>
+    <a href="#" class="user-icon">
+      <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+    </a>
+  </header>
+
+  <h2>Новые фильмы</h2>
+  <div class="movie-scroll-container">
+    <button class="prev-btn" onclick="scrollMovies(-1)">←</button>
+    <div class="movie-row">
+      {% for movie in new_movies %}
+        <div class="movie-card">
+          <a href="{% url 'search:film_page' movie.movie_data.id %}">
+            <img src="{{ movie.movie_data.poster.url }}" alt="Movie Poster">
+            <div class="movie-title"><b>{{ movie.movie_data.name }}</b></div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="next-btn" onclick="scrollMovies(1)">→</button>
+  </div>
+  <h2>Популярные книги</h2>
+  <div class="movie-scroll-container">
+    <button class="prev-btn" onclick="scrollMovies(-1)">←</button>
+    <div class="movie-row">
+      {% for movie in new_movies %}
+        <div class="movie-card">
+          <a href="{% url 'search:film_page' movie.movie_data.id %}">
+            <img src="" alt="Book Poster">
+            <div class="movie-title"><b>Book Name</b></div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button class="next-btn" onclick="scrollMovies(1)">→</button>
+  </div>
+
+  <script>
+    let currentIndex = 0;
+    const moviesToShow = 6; // Показываем по 6 карточек
+    const movieRow = document.querySelector('.movie-row');
+    const movies = document.querySelectorAll('.movie-card');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+
+    function scrollMovies(direction) {
+      const totalMovies = movies.length;
+      currentIndex += direction;
+
+      // Проверка границ (чтобы не выходить за пределы)
+      if (currentIndex < 0) currentIndex = 0;
+      if (currentIndex + moviesToShow > totalMovies) currentIndex = totalMovies - moviesToShow;
+
+      // Перемещаем ряд на нужную позицию
+      movieRow.style.transform = `translateX(-${currentIndex * (movies[0].offsetWidth + 20)}px)`;
+
+      // Отключаем кнопки при достижении границ
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex + moviesToShow >= totalMovies;
+    }
+
+    // Инициализируем кнопки
+    scrollMovies(0); // Убедимся, что кнопки в начальном состоянии
+  </script>
+
+</body>
+</html>

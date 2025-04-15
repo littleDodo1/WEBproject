@@ -5,13 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Посоветовать книгу или фильм онлайн</title>
+    <title>Flickpage</title>
     <link rel="stylesheet" href="{% static 'users/css/main_page.css' %}">
 </head>
 <body>
     <header class="shapka">
         <div class="logo_1">
-            <a href=""><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
+            <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
         </div>
         <div class="profile_pic">
             <a href=""><img src="{% static 'users/img/pfp.png' %}" width="60" alt="Иконка профиля"></a>
@@ -19,8 +19,8 @@
     </header>
 
     <nav class="site-links">
-        <a href="info_about_us.html">О нашей команде</a>
-        <a href="about_create_site.html">О создании сайта</a>
+        <a href="{% url 'about' %}">О нашей команде</a>
+        <a href="#">О создании сайта</a>
     </nav>
 
     <main class="main">

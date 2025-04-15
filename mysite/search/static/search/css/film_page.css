@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url("img/profile_fon.webp");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.user-icon {
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-icon img {
+
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.movie-header {
+    display: flex;
+    align-items: top;
+    margin-bottom: 20px;
+}
+
+.movie-poster {
+    width: 400px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.movie-info {
+    max-width: 600px;
+}
+
+.movie-info h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #333;
+}
+
+.movie-info p {
+    font-size: 1.2em;
+    color: #666;
+    margin: 5px 0;
+}
+
+.ratings {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.ratings div {
+    font-weight: bold;
+}
+
+.movie-description {
+    margin-top: 20px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #333;
+}

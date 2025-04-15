@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.volumeInfo.title }}</title>
+    <link rel="stylesheet" href="{% static 'search/css/film_page.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="{% url 'search:browse' %}"><img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого"></a></div>
+        <a href="#" class="user-icon"><img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет"></a>
+    </div>
+
+    <div class="container">
+        <div class="movie-header">
+            <img class="movie-poster" src="{{ book.volumeInfo.imageLinks.thumbnail }}" alt="Обложка книги">
+            <div class="movie-info">
+                <h1>{{ book.volumeInfo.title }}</h1>
+                <p>{{ book.volumeInfo.publishedDate }}</p>
+                <div class="ratings">
+                    {% for i in book.volumeInfo.authors %}
+                        <div>{{i}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="movie-description">
+            <h2>Описание</h2>
+            <p>{{book.volumeInfo.description}}</p>
+        </div>
+    </div>
+
+</body>
+</html>

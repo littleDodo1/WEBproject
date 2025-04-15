@@ -1,11 +1,32 @@
 from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from .forms import RegisterForm
+
+from .models import *
+
 
 def index(request):
     return render(request, 'users/index.html')
 
-def logIn(request):
-    return render(request, 'users/login-password.html')
 
-def signIn(request):
-    return render(request, 'users/register.html')
+def AboutUs(request):
+    return render(request, 'users/info_about_us.html')
+
+
+class RegisterUser(CreateView):
+    form_class = RegisterForm
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('login')
+
+
+class LoginUser(LoginView):
+    from_class = AuthenticationForm
+    template_name = 'users/login-password.html'
+
+    def get_success_url(self):
+        redirect_to = self.request.POST.get("next", "/")
+        return redirect_to
