@@ -10,8 +10,8 @@ import requests
 
 from .models import MovieCollections, CachedMovieQueries, CachedMovies
 
-#headers = {"X-API-KEY": "D0RKYS2-28GM34H-MFSAZQF-VPMDCKK"}
-headers = {"X-API-KEY": "5QT06C1-SQ44XCZ-QDBKQ9E-804RSH8"}
+
+headers = {"X-API-KEY": "тут api ключ от api кинопоиска надо"}
 
 
 # Create your views here.
