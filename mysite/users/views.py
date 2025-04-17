@@ -20,11 +20,14 @@ def AboutUs(request):
 class RegisterUser(CreateView):
     form_class = RegisterForm
     template_name = 'users/register.html'
-    success_url = reverse_lazy('login')
+
+    def get_success_url(self):
+        redirect_to = self.request.GET.get("next") or "/"
+        return f'/login/?next={redirect_to}'
 
 
 class LoginUser(LoginView):
-    from_class = AuthenticationForm
+    form_class = AuthenticationForm
     template_name = 'users/login-password.html'
 
     def get_success_url(self):

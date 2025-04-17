@@ -11,7 +11,7 @@ import requests
 from .models import MovieCollections, CachedMovieQueries, CachedMovies
 
 
-headers = {"X-API-KEY": "тут api ключ от api кинопоиска надо"}
+headers = {"X-API-KEY": "сюда ключ нада"}
 
 
 # Create your views here.

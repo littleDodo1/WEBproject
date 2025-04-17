@@ -15,7 +15,7 @@
             <source src="{% static 'users/vid/007_03.mp4' %}" type="video/mp4">
         </video>
         
-        <form action="{% url 'register' %}" method="POST">
+        <form action="{% url 'register' %}?next={{ request.GET.next }}" method="POST">
             {% csrf_token %}
             
             <h1>Регистрация</h1>
@@ -53,7 +53,7 @@
             <button type="submit" class="btn1">Зарегистрироваться</button>
             
             <div class="register-link">
-                <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+                <p>Уже есть аккаунт? <a href="{% url 'login' %}?next={{ request.GET.next }}">Войти</a></p>
             </div>
         </form>
     </div>
