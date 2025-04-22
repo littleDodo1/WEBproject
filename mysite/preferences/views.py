@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import PreferenceForm
 from .models import Preference
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def edit_preferences(request):
     try:
         preference = Preference.objects.get(user=request.user)
@@ -18,3 +20,14 @@ def edit_preferences(request):
         form = PreferenceForm(instance=preference)
 
     return render(request, 'preferences/edit_preferences.html', {'form': form})
+
+
+
+@login_required
+def view_preferences(request):
+    try:
+        preference = Preference.objects.get(user=request.user)
+    except Preference.DoesNotExist:
+        preference = None
+
+    return render(request, 'preferences/view_preferences.html', {'preference': preference})

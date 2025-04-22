@@ -1,0 +1,21 @@
+<h1>Ваши предпочтения</h1>
+
+{% if preference %}
+    <h2>Любимые жанры фильмов:</h2>
+    <ul>
+        {% for genre in preference.favorite_movie_genres.all %}
+            <li>{{ genre.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Любимые жанры книг:</h2>
+    <ul>
+        {% for genre in preference.favorite_book_genres.all %}
+            <li>{{ genre.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'edit_preferences' %}">Редактировать</a>
+{% else %}
+    <p>Предпочтения ещё не указаны. <a href="{% url 'edit_preferences' %}">Заполнить</a></p>
+{% endif %}

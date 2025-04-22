@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('preferences/', views.edit_preferences, name='edit_preferences'),
+    path('edit/', views.edit_preferences, name='edit_preferences'),
+    path('view/', views.view_preferences, name='view_preferences'),
 ]
