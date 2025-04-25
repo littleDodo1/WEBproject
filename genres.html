@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои предпочтения</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .step.active {
+            display: block;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.selected {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-back {
+            background-color: #95a5a6;
+            margin-right: 10px;
+        }
+        .btn-back:hover {
+            background-color: #7f8c8d;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .range-slider {
+            width: 100%;
+            margin: 30px 0;
+        }
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            height: 5px;
+            background-color: #ecf0f1;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .country-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        #authors-list div {
+            margin: 5px 0;
+            padding: 5px;
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+        .input-box{
+        width: 100%;
+        height: 50px;
+        /* margin: 30px 0; */
+        position: relative;
+        border: black  5px;
+        border-radius: 10px;
+        }
+        .input-box input{
+        width: 100%;
+        height: 100%;
+        /* border: black  5px;
+        border-radius: 10px; */
+        /* outline: none;
+        border: 2px solid rgb(255, 255, 255, .2);
+        border-radius: 40px;
+        font-size: 16px;
+        color:antiquewhite;
+        padding: 20px 45px 20px 20px; */
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Мои предпочтения</h1>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <!-- Шаг 1: Выбор типа контента -->
+        <div class="step active" id="step1">
+            <h2>Что вы предпочитаете?</h2>
+            <div class="options-grid">
+                <div class="option" data-type="movie">Фильмы</div>
+                <div class="option" data-type="book">Книги</div>
+            </div>
+            <div class="btn-container">
+                <button class="btn" id="next1">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 2 для фильмов: Жанры -->
+        <div class="step" id="step2-movie">
+            <h2>Выберите любимые жанры фильмов</h2>
+            <p>Можно выбрать до 6 жанров</p>
+            <div class="options-grid" id="movie-genres"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back2-movie">Назад</button>
+                <button class="btn" id="next2-movie">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 3 для фильмов: Годы выпуска -->
+        <div class="step" id="step3-movie">
+            <h2>Выберите предпочитаемые годы выпуска</h2>
+            <div class="range-slider">
+                <input type="range" min="1970" max="2023" value="2000" class="slider" id="year-range">
+                <div class="range-values">
+                    <span id="min-year">1970</span>
+                    <span id="max-year">2023</span>
+                </div>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back3-movie">Назад</button>
+                <button class="btn" id="next3-movie">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 2 для книг: Тип литературы -->
+        <div class="step" id="step2-book">
+            <h2>Какую литературу вы предпочитаете?</h2>
+            <div class="options-grid" id="book-type-options">
+                <div class="option" data-book-type="fiction">Художественная</div>
+                <div class="option" data-book-type="non-fiction">Нехудожественная</div>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back2-book">Назад</button>
+                <button class="btn" id="next2-book">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 3 для книг: Жанры художественной -->
+        <div class="step" id="step3-book-fiction">
+            <h2>Выберите любимые жанры художественной литературы</h2>
+            <div class="options-grid" id="fiction-genres"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back3-book-fiction">Назад</button>
+                <button class="btn" id="next3-book-fiction">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 3 для книг: Жанры нехудожественной -->
+        <div class="step" id="step3-book-nonfiction">
+            <h2>Выберите любимые жанры нехудожественной литературы</h2>
+            <div class="options-grid" id="nonfiction-genres"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back3-book-nonfiction">Назад</button>
+                <button class="btn" id="next3-book-nonfiction">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 4 для книг: Авторы -->
+        <div class="step" id="step4-book-authors">
+            <h2>Укажите любимых авторов (необязательно)</h2>
+            <div class="input-box">
+            <input type="text" id="author-input" placeholder="Введите имя автора">
+        </div>
+            <button class="btn" id="add-author">Добавить</button>
+            <div id="authors-list" style="margin-top: 20px;"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back4-book">Назад</button>
+                <button class="btn" id="next4-book">Далее</button>
+            </div>
+        </div>
+        
+        <!-- Шаг 4/5: Страны -->
+        <div class="step" id="step-country">
+            <h2>Выберите предпочтения по стране</h2>
+            <select class="country-select" id="country-pref">
+                <option value="any">Любые страны</option>
+                <option value="foreign">Зарубежные</option>
+                <option value="domestic">Отечественные</option>
+                <option value="specific">Конкретная страна</option>
+            </select>
+            <select class="country-select" id="specific-country" style="display: none;">
+                <option value="usa">США</option>
+                <option value="uk">Великобритания</option>
+                <option value="france">Франция</option>
+                <option value="germany">Германия</option>
+                <option value="japan">Япония</option>
+                <option value="russia">Россия</option>
+                <option value="other">Другая</option>
+            </select>
+            <div class="btn-container">
+                <button class="btn btn-back" id="back-country">Назад</button>
+                <button class="btn" id="next-country">Завершить</button>
+            </div>
+        </div>
+        
+        <!-- Финальный шаг -->
+        <div class="step" id="step-final">
+            <h2>Спасибо за ваши предпочтения!</h2>
+            <p>Теперь мы сможем подбирать для вас более релевантные рекомендации.</p>
+            <div id="results" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Данные для жанров
+        const movieGenres = ['аниме', 'биография', 'боевик', 'вестерн', 'военный', 'детектив', 'детский', 
+                           'для взрослых', 'документальный', 'драма', 'игра', 'история', 'комедия', 
+                           'концерт', 'короткометражка', 'криминал', 'мелодрама', 'музыка', 'мультфильм', 
+                           'мюзикл', 'новости', 'приключения', 'реальное ТВ', 'семейный', 'спорт', 
+                           'ток-шоу', 'триллер', 'ужасы', 'фантастика', 'фильм-нуар', 'фэнтези', 'церемония'];
+        
+        const fictionGenres = ['Боевик', 'Приключения', 'Классическая литература', 'Фэнтези', 'Ужасы', 
+                              'Детективы', 'Романы', 'Научная фантастика', 'Триллеры'];
+        
+        const nonfictionGenres = ['Биографии', 'Финансы', 'Наука', 'Искусство', 'Кулинария', 'История', 
+                                 'Саморазвитие', 'Технологии'];
+        
+        // Переменные для хранения выбора пользователя
+        let userPreferences = {
+            type: null,
+            movie: {
+                genres: [],
+                yearRange: [1970, 2023]
+            },
+            book: {
+                type: null,
+                fictionGenres: [],
+                nonfictionGenres: [],
+                authors: []
+            },
+            country: null
+        };
+        
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация выбора типа контента
+            initContentTypeSelection();
+            
+            // Заполняем жанры фильмов
+            initGenres('movie-genres', movieGenres, 'movie.genres', 6);
+            
+            // Заполняем жанры книг
+            initGenres('fiction-genres', fictionGenres, 'book.fictionGenres');
+            initGenres('nonfiction-genres', nonfictionGenres, 'book.nonfictionGenres');
+            
+            // Инициализация выбора типа книги
+            initBookTypeSelection();
+            
+            // Слайдер для годов выпуска фильмов
+            const yearSlider = document.getElementById('year-range');
+            yearSlider.addEventListener('input', function() {
+                document.getElementById('min-year').textContent = this.value;
+                userPreferences.movie.yearRange[0] = parseInt(this.value);
+            });
+            
+            // Выбор страны
+            document.getElementById('country-pref').addEventListener('change', function() {
+                const specificCountry = document.getElementById('specific-country');
+                specificCountry.style.display = this.value === 'specific' ? 'block' : 'none';
+            });
+            
+            // Добавление авторов
+            document.getElementById('add-author').addEventListener('click', function() {
+                const authorInput = document.getElementById('author-input');
+                const author = authorInput.value.trim();
+                if (author) {
+                    userPreferences.book.authors.push(author);
+                    updateAuthorsList();
+                    authorInput.value = '';
+                }
+            });
+            
+            // Навигация по шагам
+            setupNavigation();
+        });
+        
+        function initContentTypeSelection() {
+            const options = document.querySelectorAll('#step1 .option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        }
+        
+        function initBookTypeSelection() {
+            const options = document.querySelectorAll('#book-type-options .option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+        }
+        
+        function initGenres(containerId, genres, preferencePath, maxSelection = null) {
+            const container = document.getElementById(containerId);
+            genres.forEach(genre => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                option.textContent = genre;
+                option.dataset.genre = genre;
+                option.addEventListener('click', function() {
+                    toggleSelection(this, preferencePath, maxSelection);
+                });
+                container.appendChild(option);
+            });
+        }
+        
+        function toggleSelection(element, preferencePath, maxSelection) {
+            const genre = element.dataset.genre;
+            const pathParts = preferencePath.split('.');
+            let currentArray = userPreferences;
+            
+            for (let i = 0; i < pathParts.length; i++) {
+                currentArray = currentArray[pathParts[i]];
+            }
+            
+            const index = currentArray.indexOf(genre);
+            
+            if (index === -1) {
+                if (!maxSelection || currentArray.length < maxSelection) {
+                    currentArray.push(genre);
+                    element.classList.add('selected');
+                } else {
+                    alert(`Можно выбрать не более ${maxSelection} жанров`);
+                }
+            } else {
+                currentArray.splice(index, 1);
+                element.classList.remove('selected');
+            }
+        }
+        
+        function updateAuthorsList() {
+            const authorsList = document.getElementById('authors-list');
+            authorsList.innerHTML = '';
+            userPreferences.book.authors.forEach(author => {
+                const div = document.createElement('div');
+                div.textContent = author;
+                authorsList.appendChild(div);
+            });
+        }
+        
+        function setupNavigation() {
+            // Шаг 1: Выбор типа контента
+            document.getElementById('next1').addEventListener('click', function() {
+                const selected = document.querySelector('#step1 .option.selected');
+                if (!selected) {
+                    alert('Пожалуйста, выберите тип контента');
+                    return;
+                }
+                
+                userPreferences.type = selected.dataset.type;
+                document.getElementById('step1').classList.remove('active');
+                
+                if (userPreferences.type === 'movie') {
+                    document.getElementById('step2-movie').classList.add('active');
+                    updateProgress(25);
+                } else {
+                    document.getElementById('step2-book').classList.add('active');
+                    updateProgress(20);
+                }
+            });
+            
+            // Навигация для фильмов
+            document.getElementById('back2-movie').addEventListener('click', backToStep1);
+            document.getElementById('next2-movie').addEventListener('click', function() {
+                if (userPreferences.movie.genres.length === 0) {
+                    alert('Пожалуйста, выберите хотя бы один жанр');
+                    return;
+                }
+                nextStep('step2-movie', 'step3-movie', 50);
+            });
+            
+            document.getElementById('back3-movie').addEventListener('click', function() {
+                prevStep('step3-movie', 'step2-movie', 25);
+            });
+            
+            document.getElementById('next3-movie').addEventListener('click', function() {
+                nextStep('step3-movie', 'step-country', 75);
+            });
+            
+            // Навигация для книг
+            document.getElementById('back2-book').addEventListener('click', backToStep1);
+            
+            document.getElementById('next2-book').addEventListener('click', function() {
+                const selected = document.querySelector('#book-type-options .option.selected');
+                if (!selected) {
+                    alert('Пожалуйста, выберите тип литературы');
+                    return;
+                }
+                
+                userPreferences.book.type = selected.dataset.bookType;
+                document.getElementById('step2-book').classList.remove('active');
+                
+                if (userPreferences.book.type === 'fiction') {
+                    document.getElementById('step3-book-fiction').classList.add('active');
+                    updateProgress(40);
+                } else {
+                    document.getElementById('step3-book-nonfiction').classList.add('active');
+                    updateProgress(40);
+                }
+            });
+            
+            // Для художественной литературы
+            document.getElementById('back3-book-fiction').addEventListener('click', function() {
+                prevStep('step3-book-fiction', 'step2-book', 20);
+            });
+            
+            document.getElementById('next3-book-fiction').addEventListener('click', function() {
+                if (userPreferences.book.fictionGenres.length === 0) {
+                    alert('Пожалуйста, выберите хотя бы один жанр');
+                    return;
+                }
+                nextStep('step3-book-fiction', 'step4-book-authors', 60);
+            });
+            
+            // Для нехудожественной литературы
+            document.getElementById('back3-book-nonfiction').addEventListener('click', function() {
+                prevStep('step3-book-nonfiction', 'step2-book', 20);
+            });
+            
+            document.getElementById('next3-book-nonfiction').addEventListener('click', function() {
+                if (userPreferences.book.nonfictionGenres.length === 0) {
+                    alert('Пожалуйста, выберите хотя бы один жанр');
+                    return;
+                }
+                nextStep('step3-book-nonfiction', 'step-country', 60);
+            });
+            
+            // Для авторов
+            document.getElementById('back4-book').addEventListener('click', function() {
+                prevStep('step4-book-authors', 'step3-book-fiction', 40);
+            });
+            
+            document.getElementById('next4-book').addEventListener('click', function() {
+                nextStep('step4-book-authors', 'step-country', 80);
+            });
+            
+            // Для страны
+            document.getElementById('back-country').addEventListener('click', function() {
+                if (userPreferences.type === 'movie') {
+                    prevStep('step-country', 'step3-movie', 50);
+                } else if (userPreferences.book.type === 'fiction') {
+                    if (document.getElementById('step4-book-authors').classList.contains('active')) {
+                        prevStep('step-country', 'step4-book-authors', 60);
+                    } else {
+                        prevStep('step-country', 'step3-book-fiction', 40);
+                    }
+                } else {
+                    prevStep('step-country', 'step3-book-nonfiction', 40);
+                }
+            });
+            
+            document.getElementById('next-country').addEventListener('click', function() {
+                const countryPref = document.getElementById('country-pref').value;
+                userPreferences.country = {
+                    type: countryPref
+                };
+                
+                if (countryPref === 'specific') {
+                    userPreferences.country.specific = document.getElementById('specific-country').value;
+                }
+                
+                document.getElementById('step-country').classList.remove('active');
+                document.getElementById('step-final').classList.add('active');
+                updateProgress(100);
+                
+                showResults();
+            });
+        }
+        
+        function backToStep1() {
+            const currentStep = document.querySelector('.step.active');
+            currentStep.classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            updateProgress(0);
+        }
+        
+        function nextStep(currentId, nextId, progress) {
+            document.getElementById(currentId).classList.remove('active');
+            document.getElementById(nextId).classList.add('active');
+            updateProgress(progress);
+        }
+        
+        function prevStep(currentId, prevId, progress) {
+            document.getElementById(currentId).classList.remove('active');
+            document.getElementById(prevId).classList.add('active');
+            updateProgress(progress);
+        }
+        
+        function updateProgress(percent) {
+            document.getElementById('progress').style.width = percent + '%';
+        }
+        
+        function showResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Ваши предпочтения:</h3>';
+            
+            if (userPreferences.type === 'movie') {
+                resultsDiv.innerHTML += `
+                    <p><strong>Тип:</strong> Фильмы</p>
+                    <p><strong>Жанры:</strong> ${userPreferences.movie.genres.join(', ')}</p>
+                    <p><strong>Годы выпуска:</strong> с ${userPreferences.movie.yearRange[0]} по ${userPreferences.movie.yearRange[1]}</p>
+                `;
+            } else {
+                resultsDiv.innerHTML += `
+                    <p><strong>Тип:</strong> Книги (${userPreferences.book.type === 'fiction' ? 'Художественная' : 'Нехудожественная'})</p>
+                `;
+                
+                if (userPreferences.book.type === 'fiction') {
+                    resultsDiv.innerHTML += `
+                        <p><strong>Жанры:</strong> ${userPreferences.book.fictionGenres.join(', ')}</p>
+                        <p><strong>Авторы:</strong> ${userPreferences.book.authors.join(', ') || 'не указаны'}</p>
+                    `;
+                } else {
+                    resultsDiv.innerHTML += `
+                        <p><strong>Жанры:</strong> ${userPreferences.book.nonfictionGenres.join(', ')}</p>
+                    `;
+                }
+            }
+            
+            let countryText = '';
+            if (userPreferences.country.type === 'any') {
+                countryText = 'Любые страны';
+            } else if (userPreferences.country.type === 'foreign') {
+                countryText = 'Зарубежные';
+            } else if (userPreferences.country.type === 'domestic') {
+                countryText = 'Отечественные';
+            } else {
+                const countries = {
+                    'usa': 'США',
+                    'uk': 'Великобритания',
+                    'france': 'Франция',
+                    'germany': 'Германия',
+                    'japan': 'Япония',
+                    'russia': 'Россия',
+                    'other': 'Другая страна'
+                };
+                countryText = countries[userPreferences.country.specific];
+            }
+            
+            resultsDiv.innerHTML += `<p><strong>Страна:</strong> ${countryText}</p>`;
+            
+            console.log('Собранные предпочтения:', userPreferences);
+        }
+    </script>
+</body>
+</html>
