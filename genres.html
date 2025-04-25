@@ -151,7 +151,6 @@
             <div class="progress" id="progress"></div>
         </div>
         
-        <!-- Шаг 1: Выбор типа контента -->
         <div class="step active" id="step1">
             <h2>Что вы предпочитаете?</h2>
             <div class="options-grid">
@@ -163,7 +162,6 @@
             </div>
         </div>
         
-        <!-- Шаг 2 для фильмов: Жанры -->
         <div class="step" id="step2-movie">
             <h2>Выберите любимые жанры фильмов</h2>
             <p>Можно выбрать до 6 жанров</p>
@@ -174,7 +172,6 @@
             </div>
         </div>
         
-        <!-- Шаг 3 для фильмов: Годы выпуска -->
         <div class="step" id="step3-movie">
             <h2>Выберите предпочитаемые годы выпуска</h2>
             <div class="range-slider">
@@ -190,7 +187,6 @@
             </div>
         </div>
         
-        <!-- Шаг 2 для книг: Тип литературы -->
         <div class="step" id="step2-book">
             <h2>Какую литературу вы предпочитаете?</h2>
             <div class="options-grid" id="book-type-options">
@@ -203,7 +199,6 @@
             </div>
         </div>
         
-        <!-- Шаг 3 для книг: Жанры художественной -->
         <div class="step" id="step3-book-fiction">
             <h2>Выберите любимые жанры художественной литературы</h2>
             <div class="options-grid" id="fiction-genres"></div>
@@ -213,7 +208,6 @@
             </div>
         </div>
         
-        <!-- Шаг 3 для книг: Жанры нехудожественной -->
         <div class="step" id="step3-book-nonfiction">
             <h2>Выберите любимые жанры нехудожественной литературы</h2>
             <div class="options-grid" id="nonfiction-genres"></div>
@@ -223,7 +217,6 @@
             </div>
         </div>
         
-        <!-- Шаг 4 для книг: Авторы -->
         <div class="step" id="step4-book-authors">
             <h2>Укажите любимых авторов (необязательно)</h2>
             <div class="input-box">
@@ -237,7 +230,6 @@
             </div>
         </div>
         
-        <!-- Шаг 4/5: Страны -->
         <div class="step" id="step-country">
             <h2>Выберите предпочтения по стране</h2>
             <select class="country-select" id="country-pref">
@@ -261,7 +253,6 @@
             </div>
         </div>
         
-        <!-- Финальный шаг -->
         <div class="step" id="step-final">
             <h2>Спасибо за ваши предпочтения!</h2>
             <p>Теперь мы сможем подбирать для вас более релевантные рекомендации.</p>
@@ -270,7 +261,6 @@
     </div>
 
     <script>
-        // Данные для жанров
         const movieGenres = ['аниме', 'биография', 'боевик', 'вестерн', 'военный', 'детектив', 'детский', 
                            'для взрослых', 'документальный', 'драма', 'игра', 'история', 'комедия', 
                            'концерт', 'короткометражка', 'криминал', 'мелодрама', 'музыка', 'мультфильм', 
@@ -283,7 +273,6 @@
         const nonfictionGenres = ['Биографии', 'Финансы', 'Наука', 'Искусство', 'Кулинария', 'История', 
                                  'Саморазвитие', 'Технологии'];
         
-        // Переменные для хранения выбора пользователя
         let userPreferences = {
             type: null,
             movie: {
@@ -299,35 +288,28 @@
             country: null
         };
         
-        // Инициализация страницы
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация выбора типа контента
             initContentTypeSelection();
             
-            // Заполняем жанры фильмов
             initGenres('movie-genres', movieGenres, 'movie.genres', 6);
             
-            // Заполняем жанры книг
             initGenres('fiction-genres', fictionGenres, 'book.fictionGenres');
             initGenres('nonfiction-genres', nonfictionGenres, 'book.nonfictionGenres');
             
-            // Инициализация выбора типа книги
             initBookTypeSelection();
             
-            // Слайдер для годов выпуска фильмов
             const yearSlider = document.getElementById('year-range');
             yearSlider.addEventListener('input', function() {
                 document.getElementById('min-year').textContent = this.value;
                 userPreferences.movie.yearRange[0] = parseInt(this.value);
             });
             
-            // Выбор страны
             document.getElementById('country-pref').addEventListener('change', function() {
                 const specificCountry = document.getElementById('specific-country');
                 specificCountry.style.display = this.value === 'specific' ? 'block' : 'none';
             });
             
-            // Добавление авторов
+
             document.getElementById('add-author').addEventListener('click', function() {
                 const authorInput = document.getElementById('author-input');
                 const author = authorInput.value.trim();
@@ -338,7 +320,7 @@
                 }
             });
             
-            // Навигация по шагам
+
             setupNavigation();
         });
         
@@ -411,7 +393,6 @@
         }
         
         function setupNavigation() {
-            // Шаг 1: Выбор типа контента
             document.getElementById('next1').addEventListener('click', function() {
                 const selected = document.querySelector('#step1 .option.selected');
                 if (!selected) {
@@ -431,7 +412,7 @@
                 }
             });
             
-            // Навигация для фильмов
+
             document.getElementById('back2-movie').addEventListener('click', backToStep1);
             document.getElementById('next2-movie').addEventListener('click', function() {
                 if (userPreferences.movie.genres.length === 0) {
@@ -449,7 +430,7 @@
                 nextStep('step3-movie', 'step-country', 75);
             });
             
-            // Навигация для книг
+
             document.getElementById('back2-book').addEventListener('click', backToStep1);
             
             document.getElementById('next2-book').addEventListener('click', function() {
@@ -471,7 +452,7 @@
                 }
             });
             
-            // Для художественной литературы
+
             document.getElementById('back3-book-fiction').addEventListener('click', function() {
                 prevStep('step3-book-fiction', 'step2-book', 20);
             });
@@ -484,7 +465,7 @@
                 nextStep('step3-book-fiction', 'step4-book-authors', 60);
             });
             
-            // Для нехудожественной литературы
+
             document.getElementById('back3-book-nonfiction').addEventListener('click', function() {
                 prevStep('step3-book-nonfiction', 'step2-book', 20);
             });
@@ -497,7 +478,7 @@
                 nextStep('step3-book-nonfiction', 'step-country', 60);
             });
             
-            // Для авторов
+
             document.getElementById('back4-book').addEventListener('click', function() {
                 prevStep('step4-book-authors', 'step3-book-fiction', 40);
             });
@@ -506,7 +487,7 @@
                 nextStep('step4-book-authors', 'step-country', 80);
             });
             
-            // Для страны
+
             document.getElementById('back-country').addEventListener('click', function() {
                 if (userPreferences.type === 'movie') {
                     prevStep('step-country', 'step3-movie', 50);
