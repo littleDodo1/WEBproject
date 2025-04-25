@@ -28,8 +28,8 @@
             <h1>Привет!<br>Подберем подходящую <strong><em>именно тебе</em></strong> книгу или фильм?</h1>
             <h1>Лучшие книги и фильмы уже на нашем сайте!</h1>
         </div>
-        <form action="{% url 'login' %}" method="get">
-            <button class="btn">Конечно, поехали!</button>
+        <form action="{% url 'search:search_page' %}" method="get">
+            <button class="btn" type="submit">Конечно, поехали!</button>
         </form>
     </main>
 </body>
