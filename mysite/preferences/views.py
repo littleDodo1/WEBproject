@@ -21,7 +21,8 @@ def edit_preferences(request):
 
     return render(request, 'preferences/edit_preferences.html', {'form': form})
 
-
+def profile_view(request): #nado izmenit
+    return render(request, 'preferences/profile.html')
 
 @login_required
 def view_preferences(request):
