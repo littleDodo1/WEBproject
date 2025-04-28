@@ -16,6 +16,9 @@ def index(request):
 def AboutUs(request):
     return render(request, 'users/info_about_us.html')
 
+def profile_view(request):
+    return render(request, 'users/profile.html')
+
 
 class RegisterUser(CreateView):
     form_class = RegisterForm

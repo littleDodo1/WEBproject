@@ -10,8 +10,12 @@ import requests
 
 from .models import MovieCollections, CachedMovieQueries, CachedMovies
 
+import os 
+from dotenv import load_dotenv
 
-headers = {"X-API-KEY": "сюда ключ нада"}
+load_dotenv()
+
+headers = {"X-API-KEY": os.getenv("API_KEY")}
 
 
 # Create your views here.
