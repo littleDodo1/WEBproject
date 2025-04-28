@@ -4,79 +4,93 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Результаты поиска</title>
+    <title>Результаты поиска | FlickPage</title>
     <link rel="stylesheet" href="{% static 'search/css/search_results.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <div class="logo"><a href="{% url 'search:browse' %}"><img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого"></a></div>
+        <div class="logo">
+            <a href="{% url 'search:browse' %}">
+                <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+            </a>
+        </div>
         <div class="search-container">
-          <form action="{% url 'search:results' %}" method="get">
-            <label for="type-select">Я ищу:</label>
-            <select id="type-select" class="type-select" name="search_type">
-              <option value="movie">фильм</option>
-              <option value="book">книгу</option>
-            </select>
-            <p>
-            <div class="search-box">
-              <input type="text" placeholder="Поиск..." name="search_query">
-              <button type="submit">🔍</button>
-            </div>
-          </form>
-          <a href="{% url 'search:search_page' %}"><button class="advanced-button">Поиск по параметрам</button></a>
+            <form action="{% url 'search:results' %}" method="get">
+                <label for="type-select">Я ищу:</label>
+                <select id="type-select" class="type-select" name="search_type">
+                    <option value="movie">фильм</option>
+                    <option value="book">книгу</option>
+                </select>
+                <div class="search-box">
+                    <input type="text" placeholder="Поиск..." name="search_query">
+                    <button type="submit">🔍</button>
+                </div>
+            </form>
+            <a href="{% url 'search:search_page' %}">
+                <button class="advanced-button">Поиск по параметрам</button>
+            </a>
         </div>
-          <a href="#" class="user-icon"><img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет"></a>
-        </div>
+        <a href="#" class="user-icon">
+            <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+        </a>
     </header>
 
     <div class="results-header">
         <h2>Нашлось по вашему запросу</h2>
         <form method="get" class="sort-form">
-            <!-- Скрытые поля для сохранения параметров поиска -->
-            <input type="hidden" name="search_query" value="{{ request.GET.search_query }}">
-            <input type="hidden" name="search_type" value="{{ request.GET.search_type }}">
-            <input type="hidden" name="years" value="{{ request.GET.years }}">
-            <input type="hidden" name="country" value="{{ request.GET.country }}">
-            <input type="hidden" name="genre" value="{{ request.GET.genre }}">
+            {% for key, value in request.GET.items %}
+                {% if key != 'sort_by' and value %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
 
             <select name="sort_by" onchange="this.form.submit()">
                 <option value="" disabled selected>Сортировать</option>
                 <option value="year_lb" {% if request.GET.sort_by == 'year_lb' %}selected{% endif %}>Сначала старые</option>
                 <option value="year_bl" {% if request.GET.sort_by == 'year_bl' %}selected{% endif %}>Сначала новые</option>
-                <option value="rating_lb" {% if request.GET.sort_by == 'rating' %}selected{% endif %}>Сначала с низким рейтингом</option>
-                <option value="rating_bl" {% if request.GET.sort_by == 'rating' %}selected{% endif %}>Сначала с высоким рейтингом</option>
-                <option value="votes_lb" {% if request.GET.sort_by == 'votes' %}selected{% endif %}>Сначала непопулярные</option>
-                <option value="votes_bl" {% if request.GET.sort_by == 'votes' %}selected{% endif %}>Сначала популярные</option>
+                <option value="rating_lb" {% if request.GET.sort_by == 'rating_lb' %}selected{% endif %}>Сначала с низким рейтингом</option>
+                <option value="rating_bl" {% if request.GET.sort_by == 'rating_bl' %}selected{% endif %}>Сначала с высоким рейтингом</option>
+                <option value="votes_lb" {% if request.GET.sort_by == 'votes_lb' %}selected{% endif %}>Сначала непопулярные</option>
+                <option value="votes_bl" {% if request.GET.sort_by == 'votes_bl' %}selected{% endif %}>Сначала популярные</option>
             </select>
         </form>
     </div>
 
     <div class="container">
-    {% if data %}
-        {% for item in data %}
-        <div class="grid-item">
-            <a href="{% url 'search:film_page' item.id %}">
-                <div class="movie-card">
-                    <img src="{{ item.poster.url }}" alt="Movie Poster">
+        {% if data %}
+            {% for item in data %}
+                <div class="grid-item">
+                    <a href="{% url 'search:film_page' item.id %}">
+                        <div class="movie-card">
+                            <img src="{{ item.poster.url }}" alt="Movie Poster">
+                        </div>
+                        <div class="movie-title">{{ item.name }}</div>
+                    </a>
                 </div>
-                <div class="movie-title"><b>{{ item.name }}</b></div>
-            </a>
-        </div>
-        {% endfor %}
-    {% endif %}
-    {% if b_data %}
-        {% for item in b_data %}
-        <div class="grid-item">
-            <a href="{% url 'search:book_page' item.id %}">
-                <div class="movie-card">
-                    <img src="{{ item.volumeInfo.imageLinks.thumbnail }}" alt="Book Poster">
+            {% endfor %}
+        {% endif %}
+        {% if b_data %}
+            {% for item in b_data %}
+                <div class="grid-item">
+                    <a href="{% url 'search:book_page' item.key|cut:'/works/' %}">
+                        <div class="movie-card">
+                            <img src="https://covers.openlibrary.org/b/olid/{{ item.cover_edition_key }}-M.jpg" alt="Обложка не найдена :(">
+                        </div>
+                        <div class="movie-title">{{ item.title }}</div>
+                        {% if type %}
+                        <div class="author">{{ item.authors.0.name }}</div>
+                        {% endif %}
+                        {% if not type %}
+                        <div class="author">{{ item.author_name.0 }}</div>
+                        {% endif %}
+                    </a>
                 </div>
-                <div class="movie-title"><b>{{ item.volumeInfo.title }}</b></div>
-            </a>
-        </div>
-        {% endfor %}
-    {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
-
 </body>
 </html>

@@ -1,6 +1,7 @@
 *djvenv
 .env
 .idea
+.venv
 
 __pycache__/
 *.py[cod]

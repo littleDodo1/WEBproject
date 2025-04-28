@@ -1,116 +1,172 @@
-from functools import lru_cache
-
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
-from django.views.generic import ListView
-
+from django.db.models import Avg
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
+from users.models import *
+from .models import *
+
 import requests
 
-from .models import MovieCollections, CachedMovieQueries, CachedMovies
+from .movie_api_utils import (
+    fetch_kinopoisk_movie,
+    get_cached_movie,
+    cache_movie,
+    cache_query,
+    fetch_movie_search,
+    sort_movies
+)
+from .books_api_utils import (
+    fetch_books_search,
+    cache_book_query,
+    sort_books,
+    get_cached_book, fetch_single_book, cache_book
+)
 
 
-headers = {"X-API-KEY": "сюда ключ нада"}
-
-
-# Create your views here.
-@login_required(login_url = 'login')
+@login_required(login_url='login')
 def browse_page(request):
-    return render(request, 'search/browse.html', {"new_movies" : MovieCollections.objects.filter(topic_name='new')})
+    return render(request, 'search/browse.html', {
+        "new_movies": MovieCollections.objects.filter(topic_name='new'),
+        "new_books": BookCollections.objects.filter(topic_name='new')
+    })
 
-@login_required(login_url = 'login')
+
+@login_required(login_url='login')
 def film_page(request, kp_id):
-    if MovieCollections.objects.filter(movie_data__id=kp_id):
-        print("COLLECTIONS")
-        return render(request, 'search/film_page.html', {'movie': MovieCollections.objects.get(movie_data__id=kp_id).movie_data})
-    elif CachedMovies.objects.filter(movie_data__id=kp_id):
-        print("CACHED")
-        return render(request, 'search/film_page.html', {'movie': CachedMovies.objects.get(movie_data__id=kp_id).movie_data})
-    print("NEW")
-    movie = requests.get(url=f"https://api.kinopoisk.dev/v1.4/movie/{kp_id}", headers=headers).json()
-    if CachedMovies.objects.count() >= 50:
-        CachedMovies.objects.order_by("id").first().delete()
-    CachedMovies.objects.create(movie_data=movie)
-    return render(request, 'search/film_page.html', {'movie': movie})
+    movie = get_cached_movie(kp_id)
+    if not movie:
+        movie = fetch_kinopoisk_movie(kp_id)
+        if movie:
+            cache_movie(movie)
 
-@login_required(login_url = 'login')
-def book_page(request, volumeId):
-    response = requests.get(f"https://www.googleapis.com/books/v1/volumes/{volumeId}").json()
-    return render(request, 'search/book_page.html', {"book": response})
+    if request.method == "POST":
+        rating_value = request.POST.get("rating")
+        is_wished = request.POST.get("isWished")
+        if rating_value:
+            Ratings.objects.update_or_create(
+                user=request.user,
+                item_type="movie",
+                item_id=str(kp_id),
+                defaults={'grade': rating_value}
+            )
+        if is_wished is not None:
+            wished_obj, created = WishList.objects.get_or_create(
+                user=request.user,
+                item_type="movie",
+                item_id=kp_id
+            )
+            if not created:
+                wished_obj.delete()
+                return JsonResponse({'status': 'removed'})
+            return JsonResponse({'status': 'added'})
+
+    rating_qs = Ratings.objects.filter(item_type='movie', item_id=kp_id)
+    avg_rating = round(rating_qs.aggregate(avg=Avg('grade'))['avg'] or 0, 2)
+    user_rating_obj = rating_qs.filter(user=request.user).first()
+    user_rating = user_rating_obj.grade if user_rating_obj else None
+    is_reviewed = Reviews.objects.filter(item_type='movie', item_id=kp_id, user=request.user).exists()
+
+    is_wished = WishList.objects.filter(user=request.user, item_type='movie', item_id=kp_id).exists()
+
+    if History.objects.count() >= 100:
+        History.objects.order_by("id").first().delete()
+    History.objects.update_or_create(user=request.user, item_type="movie", item_id=kp_id)
+
+    return render(request, 'search/film_page.html', {
+        'movie': movie,
+        'rating': avg_rating,
+        'user_rating': user_rating,
+        'is_reviewed': is_reviewed,
+        'is_wished': is_wished
+    })
 
 
-@login_required(login_url = 'login')
+@login_required(login_url='login')
+def book_page(request, key):
+    if request.method == "POST":
+        rating_value = request.POST.get("rating")
+        is_wished = request.POST.get("isWished")
+        if rating_value:
+            Ratings.objects.update_or_create(
+                user=request.user,
+                item_type="book",
+                item_id=str(key),
+                defaults={'grade': rating_value}
+            )
+        if is_wished is not None:
+            wished_obj, created = WishList.objects.get_or_create(
+                user=request.user,
+                item_type="book",
+                item_id=key
+            )
+            if not created:
+                wished_obj.delete()
+                return JsonResponse({'status': 'removed'})
+            return JsonResponse({'status': 'added'})
+
+    rating_qs = Ratings.objects.filter(item_type='book', item_id=key)
+    avg_rating = round(rating_qs.aggregate(avg=Avg('grade'))['avg'] or 0, 2)
+    user_rating_obj = rating_qs.filter(user=request.user).first()
+    user_rating = user_rating_obj.grade if user_rating_obj else None
+    is_reviewed = Reviews.objects.filter(item_type='book', item_id=key, user=request.user).exists()
+
+    is_wished = WishList.objects.filter(user=request.user, item_type='book', item_id=key).exists()
+
+    if History.objects.count() >= 100:
+        History.objects.order_by("id").first().delete()
+    History.objects.update_or_create(user=request.user, item_type="book", item_id=key)
+    book = get_cached_book(key)
+    if not book:
+        book = fetch_single_book(key)
+        if book:
+            cache_book(book)
+    return render(request, 'search/book_page.html', {
+            'book': book,
+            'rating': avg_rating,
+            'user_rating': user_rating,
+            'is_reviewed': is_reviewed,
+            'is_wished': is_wished
+        })
+
+
+@login_required(login_url='login')
 def search_page(request):
     return render(request, 'search/search_page.html')
 
 
-@login_required(login_url = 'login')
+@login_required(login_url='login')
 def search_results(request):
-    global data
     query = request.GET.get('search_query', '')
-    item_type = request.GET.get('search_type', 'movie')
+    item_type = request.GET.get('search_type', '')
     years = request.GET.get('years', '')
     country = request.GET.get('country', '').split(",")
     genres = request.GET.getlist('genre', '!церемония')
     sort_by = request.GET.get("sort_by", "")
+    param_type = request.GET.get("type", "")
 
     if item_type == "movie":
         try:
-            if years == "":
+            if not param_type:
                 data = get_object_or_404(CachedMovieQueries, query=query).movie_data
-                print("CACHED QUERY 0")
             else:
                 data = get_object_or_404(CachedMovieQueries, years=years, country=country, genres=genres).movie_data
-                print("CACHED QUERY 1")
         except Http404:
-            print("NEW QUERY")
-            if years == "":
-                result = requests.get(url=f"https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=5&query={query}",
-                                      headers=headers)
-            else:
-                result = requests.get(
-                    'https://api.kinopoisk.dev/v1.4/movie',
-                    params={
-                        "genres.name": genres,
-                        "limit": 100,
-                        "page": 1,
-                        "notNullFields": ["poster.url", "description"],
-                        "year": years,
-                        "countries.name": country,
-                    },
-                    headers=headers)
-            data = result.json()["docs"] if result.status_code == 200 else None
+            data = fetch_movie_search(query, years, country, genres)
+            cache_query(query, years, country, genres, data)
 
-            if CachedMovieQueries.objects.count() >= 50:
-                CachedMovieQueries.objects.order_by("id").first().delete()
-            CachedMovieQueries.objects.create(query=query, years=years, country=country, genres=genres, movie_data=data)
-            print("ADDED")
-
-        match sort_by:
-            case "year_lb":
-                data = sorted(data, key=lambda x: x.get("year", 0), reverse=False)
-            case "year_bl":
-                data = sorted(data, key=lambda x: x.get("year", 0), reverse=True)
-            case "rating_lb":
-                data = sorted(data,
-                              key=lambda x: (x.get("rating", {}).get("kp", 0), x.get("rating", {}).get("imdb", 0)),
-                              reverse=False)
-            case "rating_bl":
-                data = sorted(data,
-                              key=lambda x: (x.get("rating", {}).get("kp", 0), x.get("rating", {}).get("imdb", 0)),
-                              reverse=True)
-            case "votes_lb":
-                data = sorted(data,
-                              key=lambda x: (x.get("rating", {}).get("kp", 0), x.get("rating", {}).get("imdb", 0)),
-                              reverse=False)
-            case "votes_bl":
-                data = sorted(data,
-                              key=lambda x: (x.get("rating", {}).get("kp", 0), x.get("rating", {}).get("imdb", 0)),
-                              reverse=True)
+        data = sort_movies(data, sort_by)
         return render(request, 'search/search_results.html', {"data": data})
 
     elif item_type == "book":
-        result = requests.get(url=f"https://www.googleapis.com/books/v1/volumes?q={query}")
-        b_data = result.json()["items"] if result.status_code == 200 else None
-        return render(request, 'search/search_results.html', {"b_data": b_data})
+        try:
+            if not param_type:
+                data = get_object_or_404(CachedBookQueries, query=query).book_data
+            else:
+                data = get_object_or_404(CachedBookQueries, genres=genres[0] if genres else "").book_data
+        except Http404:
+            print("new")
+            data = fetch_books_search(query, genres[0])
+            cache_book_query(query, genres[0], data)
+
+        data = sort_books(data, sort_by)
+        return render(request, 'search/search_results.html', {"b_data": data, "type": param_type})

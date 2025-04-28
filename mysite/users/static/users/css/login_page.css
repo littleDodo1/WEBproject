@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:'Poppins', sans-serif;
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 body{
@@ -31,6 +31,7 @@ body{
 .wrapper h1{
     font-size: 36px;
     text-align: center;
+    font-weight: 550;
 }
 
 .wrapper .input-box{

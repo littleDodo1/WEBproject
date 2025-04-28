@@ -7,29 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flickpage</title>
     <link rel="stylesheet" href="{% static 'users/css/main_page.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="shapka">
         <div class="logo_1">
             <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
         </div>
+        <nav class="site-links">
+        <a href="{% url 'about' %}">О нашей команде</a>
+        </nav>
         <div class="profile_pic">
             <a href=""><img src="{% static 'users/img/pfp.png' %}" width="60" alt="Иконка профиля"></a>
         </div>
     </header>
 
-    <nav class="site-links">
-        <a href="{% url 'about' %}">О нашей команде</a>
-        <a href="#">О создании сайта</a>
-    </nav>
+
 
     <main class="main">
         <div class="hello">
-            <h1>Привет!<br>Подберем подходящую <strong><em>именно тебе</em></strong> книгу или фильм?</h1>
+            <h1>Привет!<br>Подберем подходящую именно тебе книгу или фильм?</h1>
             <h1>Лучшие книги и фильмы уже на нашем сайте!</h1>
         </div>
-        <form action="{% url 'login' %}" method="get">
-            <button class="btn">Конечно, поехали!</button>
+        <form action="{% url 'search:browse' %}" method="get">
+            <button class="btn" type="submit">Конечно, поехали!</button>
         </form>
     </main>
 </body>

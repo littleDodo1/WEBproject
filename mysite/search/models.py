@@ -8,8 +8,10 @@ class MovieCollections(models.Model):
     movie_data = models.JSONField()
 
 
-class popularBooks(models.Model):
+class BookCollections(models.Model):
+    topic_name = models.CharField(max_length=20)
     book_data = models.JSONField()
+
 
 class CachedMovieQueries(models.Model):
     query = models.TextField()
@@ -18,5 +20,16 @@ class CachedMovieQueries(models.Model):
     genres = models.TextField()
     movie_data = models.JSONField()
 
+
 class CachedMovies(models.Model):
     movie_data = models.JSONField()
+
+
+class CachedBookQueries(models.Model):
+    query = models.TextField()
+    genres = models.TextField()
+    book_data = models.JSONField()
+
+
+class CachedBooks(models.Model):
+    book_data = models.JSONField()

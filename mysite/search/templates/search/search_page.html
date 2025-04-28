@@ -5,8 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поиск фильмов и книг</title>
+    <title>Поиск | FlickPage</title>
     <link rel="stylesheet" href="{% static 'search/css/search_page.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -15,13 +21,12 @@
     </div>
 
     <div class="container">
-        <h1>Поиск фильмов и книг</h1>
+        <h1>Подбор фильмов и книг по параметрам</h1>
         <form method="get" action="{% url 'search:results' %}">
             <select id="typeSelect" onchange="toggleFilters()" name="search_type">
                 <option value="movie">Фильм</option>
                 <option value="book">Книга</option>
             </select>
-
             <div id="movieFilters">
                 <div class="multi-select">
                     <input type="checkbox" id="action" value="боевик" name="genre">
@@ -40,6 +45,10 @@
                     <label for="animation">Анимация</label>
                     <input type="checkbox" id="documentary" value="документальный" name="genre">
                     <label for="documentary">Документальный</label>
+                    <input type="checkbox" id="melodrama" value="мелодрама" name="genre">
+                    <label for="melodrama">Мелодрама</label>
+                    <input type="checkbox" id="military" value="военный" name="genre">
+                    <label for="military">Военный</label>
                     <input type="checkbox" id="mystery" value="фэнтези" name="genre">
                     <label for="mystery">Фэнтези</label>
                     <input type="checkbox" id="western" value="вестерн" name="genre">
@@ -47,18 +56,36 @@
                     <input type="checkbox" id="adventure" value="приключения" name="genre">
                     <label for="adventure">Приключения</label>
                 </div>
-                <select name="years" required>
-                    <option value="" disabled selected>Десятилетие</option>
-                    <option value="1900-2025">Любое</option>
-                    <option value="2020-2025">2020-е</option>
-                    <option value="2010-2019">2010-е</option>
-                    <option value="2000-2009">2000-е</option>
-                    <option value="1990-1999">1990-е</option>
-                    <option value="1980-1989">1980-е</option>
-                    <option value="1970-1979">1970-е</option>
-                    <option value="1960-1969">1960-е</option>
-                    <option value="1900-1959">< 1960</option>
-                </select>
+                <div id="yearRangeSlider" style="margin: 20px;"></div>
+                <input type="hidden" id="yearsInput" name="years" value="1900-2025">
+
+                <script>
+                    var yearSlider = document.getElementById('yearRangeSlider');
+
+                    noUiSlider.create(yearSlider, {
+                        start: [1900, 2025],
+                        connect: true,
+                        step: 1,
+                        range: {
+                            'min': 1900,
+                            'max': 2025
+                        },
+                        tooltips: [true, true], // отображение всплывающих подсказок
+                        format: {
+                            to: function (value) {
+                                return Math.round(value);
+                            },
+                            from: function (value) {
+                                return Number(value);
+                            }
+                        }
+                    });
+
+                    yearSlider.noUiSlider.on('update', function (values, handle) {
+                        // При каждом изменении обновляем скрытое поле для отправки
+                        document.getElementById('yearsInput').value = `${values[0]}-${values[1]}`;
+                    });
+                </script>
                 <div class="checkbox-group">
                     <div class="toggle-group">
                         <input type="radio" id="option-rus" name="country" value="Россия,СССР" checked>
@@ -73,6 +100,9 @@
                         <input type="radio" id="option-uk" name="country" value="Великобритания">
                         <label for="option-uk">Великобритания</label>
 
+                        <input type="radio" id="option-ge" name="country" value="Германия">
+                        <label for="option-ge">Германия</label>
+
                         <input type="radio" id="option-korea" name="country" value="Корея Южная">
                         <label for="option-korea">Корея</label>
 
@@ -84,32 +114,33 @@
                     </div>
                 </div>
             </div>
-
             <div id="bookFilters" style="display: none;">
-                <select name="genres">
+                <select name="genre">
                     <option value="" disabled selected>Жанр</option>
+                    <option value="action">Боевик</option>
+                    <option value="adventure">Приключения</option>
+                    <option value="classics">Классическая литература</option>
                     <option value="fantasy">Фэнтези</option>
-                    <option>Детектив</option>
-                    <option>Роман</option>
-                    <option>Историческая</option>
-                    <option>Фантастика</option>
-                    <option>Приключения</option>
-                    <option>Биография</option>
-                    <option>Научная</option>
-                    <option>Психология</option>
-                    <option>Классика</option>
-                </select>
-                <select name="years">
-                    <option value="" disabled selected>Век</option>
-                    <option value="2000-2025">XXI век</option>
-                    <option value="1900-1999">XX век</option>
-                    <option value="1800-1899">XIX век</option>
-                    <option value="1700-1799">XVIII век</option>
-                    <option value="1600-1699">XVII век</option>
-                    <option value="0-1599">≤ XVI век</option>
+                    <option value="horror">Ужасы</option>
+                    <option value="novel">Романы</option>
+                    <option value="science_fiction">Научная фантастика</option>
+                    <option value="thriller">Триллеры</option>
+                    <option value="short_stories">Рассказы</option>
+                    <option value="romance">Романтика</option>
+                    <option value="poetry">Поэзия</option>
+                    <option value="plays">Пьесы</option>
+                    <option value="mystery_and_detective_stories">Мистика и детективы</option>
+                    <option value="magic">Магия</option>
+                    <option value="humor">Юмор</option>
+                    <option value="biography">Биография</option>
+                    <option value="business">Бизнес</option>
+                    <option value="cooking">Приготовление еды</option>
+                    <option value="psychology">Психология</option>
+                    <option value="religion">Религия</option>
+
                 </select>
             </div>
-
+            <input type="hidden" name="type" value="by_params"/>
             <button type="submit">Применить</button>
         </form>
     </div>
@@ -119,6 +150,29 @@
             let type = document.getElementById('typeSelect').value;
             document.getElementById('movieFilters').style.display = type === 'movie' ? 'block' : 'none';
             document.getElementById('bookFilters').style.display = type === 'book' ? 'block' : 'none';
+
+            if (type === 'movie') {
+                // Показаны фильтры фильмов => включить поле yearsInput
+                document.getElementById('yearsInput').disabled = false;
+
+                // Сбросить книжные селекты
+                document.querySelectorAll('#bookFilters select').forEach(select => {
+                    select.selectedIndex = 0;
+                });
+
+            } else {
+                // Показаны фильтры книг => отключить поле yearsInput
+                document.getElementById('yearsInput').disabled = true;
+
+                // Сбросить фильтры фильмов
+                document.querySelectorAll('#movieFilters input, #movieFilters select').forEach(el => {
+                    if (el.type === 'checkbox' || el.type === 'radio') {
+                        el.checked = false;
+                    } else {
+                        el.selectedIndex = 0;
+                    }
+                });
+            }
         }
     </script>
 </body>

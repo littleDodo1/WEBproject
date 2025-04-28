@@ -1,0 +1,124 @@
+* {
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+body {
+  background-color: #f9f9f9;
+  background-image: url("img/profile_fon.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+header.shapka {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.user-icon img {
+  height: 50px;
+}
+
+main.main-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  font-weight: 600;
+  font-size: 30px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movie-block {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.movie-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin-top: 15px;
+}
+
+.poster {
+  width: 250px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.review-form {
+  width: 100%;
+}
+
+.form-section {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #555;
+}
+
+textarea, input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+input[type="date"] {
+  height: 40px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  background-color: #FF8800;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+.submit-btn:hover {
+  background-color: #FF8800;
+}
