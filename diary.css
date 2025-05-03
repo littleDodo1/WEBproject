@@ -13,9 +13,10 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background:transparent;
-    background: url("yura.mp4");
+    background-image: url("Oyster_book_river-photoaidcom-darken (1).webp");
     background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .wrapper{
@@ -123,16 +124,6 @@ body{
     text-decoration: underline;
 }
 
-.bgvideo {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -9999;
-  }
 
 
   .cards-container {
@@ -305,6 +296,7 @@ body{
 }
 
 
+/* Добавляем в начало файла (после импорта шрифтов) */
 .shapka {
     position: fixed;
     top: 0;
@@ -315,7 +307,7 @@ body{
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: rgba(31, 24, 20, 0.7); 
+    background: rgba(31, 24, 20, 0.7); /* Полупрозрачный фон как у wrapper */
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
