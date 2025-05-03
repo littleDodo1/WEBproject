@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои оценки</title>
+    <link rel="stylesheet" href="diary.css">
+    <link rel="icon" type="image/png" href="/миниЛого проект питон.png">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<header class="shapka">
+    <div class="logo_1">
+         <a href="{% url 'search:browse' %}"><img src="Лого проект питон.png" height="55" alt="Лого"></a> 
+    </div>
+    <div class="profile-container">
+        <div class="profile-icon">
+            <img src="pfp.png" alt="Иконка профиля" onclick="toggleDropdown()">
+            <div id="profileDropdown" class="dropdown-menu">
+                <a href="myprofile.html">Мой профиль</a>
+                <a href="#">Сменить аккаунт</a>
+                <a href="#">Выйти из аккаунта</a>
+                <a href="#">Изменить информацию</a>
+            </div>
+        </div>
+</header>
+<body>
+    
+    <div class="wrapper">
+        <video autoplay loop muted class="bgvideo" id="bgvideo">
+            <source src="yura.mp4" type="video/mp4"></source>
+        </video>
+        <h1>Оценённые вами фильмы и книги</h1>
+
+        <div class="cards-container" id="cards-container">
+            <!-- Карточки будут здесь -->
+        </div>
+    </div>
+
+    <!-- Модальное окно для отзыва -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="modal-title"></h2>
+            <img id="modal-cover" src="" alt="">
+            <p id="modal-review"></p>
+            <p id="modal-rating"></p>
+            <!-- Новая кнопка -->
+            <a id="edit-link" class="edit-btn" href="add_rewiew.html">Отредактировать отзыв</a>
+        </div>
+    </div>
+
+    <script src="diary.js"></script>
+</body>
+</html>

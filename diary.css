@@ -1,0 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Poppins', sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background:transparent;
+    background: url("yura.mp4");
+    background-size: cover;
+}
+
+.wrapper{
+    width: 950px;
+    height: 100%;
+    background-color: #1f181854;
+    border: 2px solid rgb(255, 255, 255, .2);
+    /* backdrop-filter: blur(20px); */
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    color:antiquewhite;
+    border-radius: 10px;
+    padding: 30px 40px;
+    margin-top: 80px;
+}
+
+.wrapper h1{
+    font-size: 36px;
+    text-align: center;
+}
+
+.wrapper .input-box{
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+    position: relative;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color:antiquewhite;
+    padding: 20px 45px 20px 20px;
+
+}
+
+.input-box input::placeholder{
+    color:antiquewhite;
+}
+
+.input-box i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.wrapper .remember{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember label input{
+    accent-color: #fff;
+    margin-right: 3px;
+}
+
+.remember a{
+    color: antiquewhite;
+    text-decoration: none;
+}
+.remember a:hover{
+    color:orange;
+    transition: 0.4s;
+    text-decoration: underline;
+}
+
+.wrapper .btn1{
+    width: 100%;
+    height: 45px;
+    background:antiquewhite;
+    border:none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgb(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.wrapper .register-link{
+    font-size: 14.5px;
+    text-align:center;
+    margin-top:20px
+}
+
+.register-link p a{
+    color:antiquewhite;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link p a:hover{
+    color:orange;
+    transition: 0.4s;
+    text-decoration: underline;
+}
+
+.bgvideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -9999;
+  }
+
+
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: antiquewhite;
+}
+
+.card img {
+    width: 100%;
+    height: 200px; 
+    object-fit: contain; 
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.3); 
+}
+
+.card h3 {
+    margin: 10px 0;
+    color: orange;
+}
+
+.card .review {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.card .rating {
+    color: gold;
+    font-size: 18px;
+}
+
+.card .show-review-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid antiquewhite;
+    color: antiquewhite;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.card .show-review-btn:hover {
+    background: orange;
+    color: #333;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: rgba(31, 24, 20, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 30px;
+    width: 80%;
+    max-width: 600px;
+    color: antiquewhite;
+    position: relative;
+}
+
+.modal-content img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    color: antiquewhite;
+}
+
+.close-btn:hover {
+    color: orange;
+}
+
+.edit-btn {
+    display: inline-block;
+    background: rgba(255, 165, 0, 0.3);
+    border: 1px solid orange;
+    color: antiquewhite;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.edit-btn:hover {
+    background: orange;
+    color: #333;
+}
+
+
+
+.profile-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.profile-icon img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+    border: 2px solid #3498db;
+}
+
+.profile-icon img:hover {
+    transform: scale(1.1);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.dropdown-menu a {
+    color: #2c3e50;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+    color: #3498db;
+}
+
+.show {
+    display: block;
+}
+
+
+.shapka {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: rgba(31, 24, 20, 0.7); 
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo_1 {
+    height: 55px;
+}
+
+.logo_1 img {
+    height: 100%;
+    width: auto;
+    transition: transform 0.3s;
+}
+
+.logo_1 img:hover {
+    transform: scale(1.05);
+}
+
