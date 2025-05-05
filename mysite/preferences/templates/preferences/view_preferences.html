@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваши предпочтения</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #e0f7fa;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #00796b;
+            font-weight: 500;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .edit-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #2196F3;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .edit-link:hover {
+            background-color: #1976d2;
+        }
+        p {
+            text-align: center;
+            font-size: 18px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ваши предпочтения</h1>
+
+    {% if preference %}
+        <div class="section">
+            <h2>Любимые жанры фильмов</h2>
+            <ul>
+                {% for genre in preference.favorite_movie_genres.all %}
+                    <li>{{ genre.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые жанры книг</h2>
+            <ul>
+                {% for genre in preference.favorite_book_genres.all %}
+                    <li>{{ genre.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые страны</h2>
+            <ul>
+                {% for country in preference.favorite_countries.all %}
+                    <li>{{ country.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые десятилетия фильмов</h2>
+            <ul>
+                {% for decade in preference.favorite_movie_decades.all %}
+                    <li>{{ decade.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые десятилетия книг</h2>
+            <ul>
+                {% for decade in preference.favorite_book_decades.all %}
+                    <li>{{ decade.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые авторы</h2>
+            <ul>
+                {% for author in preference.favorite_book_authors.all %}
+                    <li>{{ author.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Любимые режиссеры</h2>
+            <ul>
+                {% for director in preference.favorite_movie_directors.all %}
+                    <li>{{ director.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="{% url 'edit_preferences' %}" class="edit-link">Редактировать предпочтения</a>
+    {% else %}
+        <p>Предпочтения ещё не указаны. <a href="{% url 'edit_preferences' %}" class="edit-link">Заполнить</a></p>
+    {% endif %}
+</div>
+
+</body>
+</html>
