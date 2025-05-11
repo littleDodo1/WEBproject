@@ -1,3 +1,9 @@
+*{
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-image: url("img/profile_fon.webp");
@@ -37,8 +43,8 @@ body {
     font-size: 20px;
 }
 .container {
-    max-width: 600px;
-    background: #FF8800;
+    max-width: 700px;
+    background: #FAC012;
     padding: 20px;
     margin: 80px auto 20px;
     border-radius: 8px;
@@ -47,6 +53,7 @@ body {
 h1 {
     text-align: center;
     color: #A60B03;
+    font-weight: 600;
 }
 input, select, button {
     width: 100%;
@@ -62,7 +69,7 @@ button {
     cursor: pointer;
 }
 button:hover {
-    background-color: #0056b3;
+    background-color: #910a03;
 }
 .checkbox-group, .multi-select {
     display: flex;
@@ -83,7 +90,43 @@ button:hover {
     display: none;
 }
 .checkbox-group input:checked + label, .multi-select input:checked + label {
-    border-color: #007bff;
-    background-color: #007bff;
+    border-color: #FF8800;
+    background-color: #FF8800;
     color: white;
 }
+#yearRangeSlider .noUi-connect {
+    background: #FF8800; /* Красная линия между бегунками */
+}
+
+#yearRangeSlider .noUi-target {
+    background: #f0f0f0; /* Светло-серый фон всего ползунка */
+    border: none;
+    box-shadow: none;
+    height: 4px; /* Тонкая линия */
+}
+
+#yearRangeSlider .noUi-handle {
+    background: white; /* Белые бегунки */
+    border: 2px solid #999; /* Серые обводки */
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    top: -7px; /* Чтобы бегунок был по центру линии */
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+/* Убираем лишние полоски на бегунках */
+#yearRangeSlider .noUi-handle::before,
+#yearRangeSlider .noUi-handle::after {
+    display: none;
+}
+
+/* Настройки для всплывающих подсказок (лет) */
+#yearRangeSlider .noUi-tooltip {
+    background: #FF8800;
+    color: white;
+    border: none;
+    font-size: 14px;
+    border-radius: 3px;
+    padding:

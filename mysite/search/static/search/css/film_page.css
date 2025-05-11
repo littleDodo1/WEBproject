@@ -1,11 +1,17 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
     margin: 0;
     padding: 0;
     background-image: url("img/profile_fon.webp");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+}
+
+.link {
+  text-decoration: none;
 }
 
 .header {
@@ -36,8 +42,8 @@ body {
 .container {
     width: 80%;
     margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.85);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
@@ -53,7 +59,7 @@ body {
     height: 600px;
     object-fit: cover;
     border-radius: 8px;
-    margin-right: 20px;
+    margin-right: 50px;
 }
 
 .movie-info {
@@ -64,6 +70,11 @@ body {
     margin: 0;
     font-size: 2.5em;
     color: #333;
+    font-weight: 600;
+}
+
+.movie-info h3 {
+    font-weight: 600;
 }
 
 .movie-info p {
@@ -79,7 +90,7 @@ body {
 }
 
 .ratings div {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .movie-description {
@@ -87,4 +98,85 @@ body {
     font-size: 1.1em;
     line-height: 1.6;
     color: #333;
+    font-size: 20px;
+}
+
+.movie-description h2 {
+    font-weight: 600;
+}
+
+.rating {
+  margin-top: 30px;
+  border-top: 1px solid black;
+  padding-top: 15px;
+}
+
+.stars {
+  display: inline-flex;
+  flex-direction: row-reverse; /* <-- ключевая строка */
+}
+
+.stars input {
+  display: none;
+}
+
+.stars label {
+  font-size: 30px;
+  color: gray;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars label:hover,
+.stars label:hover ~ label {
+  color: gold;
+}
+
+.stars input:checked ~ label {
+  color: gray;
+}
+
+.stars input:checked + label,
+.stars input:checked + label ~ label {
+  color: gold;
+}
+
+.add-to-watchlist {
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #FF8800;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #e68619;
+}
+
+#watchlist-icon {
+    margin-right: 8px;
+    font-size: 1.5em;
+    transition: transform 0.3s ease-in-out;
+}
+
+.add-to-watchlist button.active #watchlist-icon {
+    transform: rotate(360deg);
+}
+
+.add-to-watchlist button.active {
+    background-color: #c8c8c8; /* Цвет кнопки, когда фильм добавлен */
+}
+
+.add-to-watchlist button.active #watchlist-icon {
+    content: "\f00c"; /* Код для галочки FontAwesome */
 }

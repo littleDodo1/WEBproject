@@ -1,11 +1,12 @@
-*{
-    margin: 0px;
-    padding: 0px;
+* {
+    margin: 0;
+    padding: 0;
     border: none;
-    font-family: "Boldonse", system-ui, sans-serif;
     color: antiquewhite;
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
-
 
 body {
     background-image: url("img/profile_fon.webp");
@@ -14,39 +15,75 @@ body {
     background-attachment: fixed;
 }
 
+.shapka {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
 .logo_1 {
-    padding: 40px 0px 0px 100px;
+    flex: 1; /* Занимает 1 часть пространства */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.profile_pic{
-    padding: 40px 100px 0px 0px;
+.site-links {
+    flex: 1; /* Занимает 1 часть пространства */
+    display: flex;
+    justify-content: center; /* Центрируем ссылку */
+    align-items: center;
+    font-size: 24px;
+    gap: 20px;
 }
 
-.hello{
+.site-links a {
+    text-decoration: none;
+    color: antiquewhite;
+    font-weight: bold;
+}
+
+.site-links a:hover {
+    transition: 0.4s;
+    color: orange;
+}
+
+.profile_pic {
+    flex: 1; /* Занимает 1 часть пространства */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.hello {
     padding: 150px 0;
     text-align: center;
-    h1{
-        font-size: 40px;
-    }
+}
+
+.hello h1 {
+    font-weight: 600;
+    font-size: 45px;
 }
 
 .btn {
-     background-color: #AC4C0C;
-     border: none;
-     color: white;
-     padding: 16px 40px;
-     text-align: center;
-     font-size: 16px;
-     display: block;
-     margin: 0 auto; /* Центрирование */
-     width: fit-content; /* Ширина по содержимому */
-     opacity: 1;
-     transition: 0.3s;
-     cursor:pointer;
+    background-color: #AC4C0C;
+    border: none;
+    color: white;
+    padding: 16px 40px;
+    text-align: center;
+    font-size: 16px;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+    opacity: 1;
+    transition: 0.3s;
+    cursor: pointer;
 }
 
-.btn:hover {opacity: 0.6}
-
+.btn:hover {
+    opacity: 0.6;
+}
 
 .about-us {
     color: antiquewhite;
@@ -63,23 +100,16 @@ body {
 
 .about-us a:hover {
     transition: 0.4s;
-    color:orange
+    color: orange;
 }
 
-
-.shapka{
-    display: flex;
-    justify-content: space-between;
-}
-
-.about-create{
+.about-create {
     color: antiquewhite;
     text-align: center;
     padding-right: 20px;
     padding-top: 110px;
     font-size: 20px;
 }
-
 
 .about-create a {
     text-decoration: none;
@@ -89,30 +119,24 @@ body {
 
 .about-create a:hover {
     transition: 0.4s;
-    color:orange
+    color: orange;
 }
 
 @media (max-width: 768px) {
     .hello h1 {
         font-size: 24px;
     }
+
     .btn {
         padding: 12px 24px;
     }
-}
 
-.site-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px 0;
-    a{
-        text-decoration: none;
-        color: antiquewhite;
-        font-weight: bold;
+    .shapka {
+        flex-direction: column;
+        gap: 10px;
     }
-    a:hover{
-        transition: 0.4s;
-        color:orange
+
+    .logo_1, .site-links, .profile_pic {
+        flex: none;
     }
 }

@@ -1,0 +1,84 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Оставьте отзыв | FlickPage</title>
+  <link rel="stylesheet" href="{% static 'users/css/add_review.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="shapka">
+  <div class="logo">
+      <a href="{% url 'search:browse' %}">
+        <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+      </a>
+  </div>
+  <a href="#" class="user-icon">
+      <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+  </a>
+</header>
+{% if movie %}
+<main class="main-content">
+  <h2>Поделитесь своим мнением</h2>
+
+  <div class="container">
+    <div class="movie-block">
+      <a href="{% url 'search:film_page' movie.id %}">
+        <img class="poster" src="{{ movie.poster.url }}" alt="Постер фильма">
+        <div class="movie-title">{{ movie.name }}</div>
+      </a>
+    </div>
+
+    <form method="post" action="{% url 'add_review' item_type movie.id %}" class="review-form">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <label for="review">Ваш отзыв</label>
+        <textarea id="review" name="review" placeholder="Поделитесь своим мнением здесь" required></textarea>
+      </div>
+
+      <div class="form-section">
+        <label for="watch_date">Дата просмотра</label>
+        <input type="date" id="watch_date" name="watch_date">
+      </div>
+      <button type="submit" class="submit-btn">Добавить в дневник</button>
+    </form>
+  </div>
+</main>
+{% else %}
+<main class="main-content">
+  <h2>Поделитесь своим мнением</h2>
+
+  <div class="container">
+    <div class="movie-block">
+      <a href="{% url 'search:book_page' book.key|cut:'/works/' %}">
+        <img class="poster" src="https://covers.openlibrary.org/b/id/{{ book.covers.0 }}-L.jpg" alt="Постер фильма">
+        <div class="movie-title">{{ book.title }}</div>
+      </a>
+    </div>
+
+    <form method="post" action="{% url 'add_review' item_type book.key|cut:'/works/' %}" class="review-form">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <label for="review">Ваш отзыв</label>
+        <textarea id="review" name="review" placeholder="Поделитесь своим мнением здесь" required></textarea>
+      </div>
+
+      <div class="form-section">
+        <label for="watch_date">Дата прочтения</label>
+        <input type="date" id="watch_date" name="watch_date">
+      </div>
+      <button type="submit" class="submit-btn">Добавить в дневник</button>
+    </form>
+  </div>
+</main>
+{% endif %}
+</body>
+</html>

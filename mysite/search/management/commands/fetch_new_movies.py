@@ -6,6 +6,7 @@ class Command(BaseCommand):
     help = 'Fetch movies from Kinopoisk API and store them in the database'
 
     def handle(self, *args, **kwargs):
+        MovieCollections.objects.filter(topic="new").delete()
         response = requests.get(
             url="https://api.kinopoisk.dev/v1.4/movie?page=1&limit=50&notNullFields=name&notNullFields=poster.url"
                 "&notNullFields=description&type=movie&isSeries=false&status=&year=2025&votes.kp=1000-6666666&votes"

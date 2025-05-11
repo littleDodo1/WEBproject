@@ -2,6 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 .logo{
@@ -107,7 +110,6 @@ a:hover {
 }
 
 .col-1-2 h2 {
-    font-family: sans-serif;
     font-weight: normal;
     font-size: 18px;
     color: black;

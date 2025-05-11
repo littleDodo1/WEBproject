@@ -4,8 +4,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Каталог</title>
+  <title>Каталог | FlickPage</title>
   <link rel="stylesheet" href="{% static 'search/css/browse.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -23,7 +27,7 @@
           <option value="book">книгу</option>
         </select>
         <div class="search-box">
-          <input type="text" placeholder="Поиск..." name="search_query">
+          <input type="text" placeholder="Поиск..." name="search_query" required>
           <button type="submit">🔍</button>
         </div>
       </form>
@@ -44,23 +48,7 @@
         <div class="movie-card">
           <a href="{% url 'search:film_page' movie.movie_data.id %}">
             <img src="{{ movie.movie_data.poster.url }}" alt="Movie Poster">
-            <div class="movie-title"><b>{{ movie.movie_data.name }}</b></div>
-          </a>
-        </div>
-      {% endfor %}
-    </div>
-
-    <button class="next-btn" onclick="scrollMovies(1)">→</button>
-  </div>
-  <h2>Популярные книги</h2>
-  <div class="movie-scroll-container">
-    <button class="prev-btn" onclick="scrollMovies(-1)">←</button>
-    <div class="movie-row">
-      {% for movie in new_movies %}
-        <div class="movie-card">
-          <a href="{% url 'search:film_page' movie.movie_data.id %}">
-            <img src="" alt="Book Poster">
-            <div class="movie-title"><b>Book Name</b></div>
+            <div class="movie-title">{{ movie.movie_data.name }}</div>
           </a>
         </div>
       {% endfor %}
@@ -86,7 +74,7 @@
       if (currentIndex + moviesToShow > totalMovies) currentIndex = totalMovies - moviesToShow;
 
       // Перемещаем ряд на нужную позицию
-      movieRow.style.transform = `translateX(-${currentIndex * (movies[0].offsetWidth + 20)}px)`;
+      movieRow.style.transform = `translateX(-${currentIndex * (movies[0].offsetWidth*2 + 20)}px)`;
 
       // Отключаем кнопки при достижении границ
       prevBtn.disabled = currentIndex === 0;
