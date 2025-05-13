@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 class MovieGenre(models.Model):
     name = models.CharField(max_length=50)
@@ -39,7 +39,7 @@ class MovieDirector(models.Model):
     
 
 class Preference(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     favorite_movie_genres = models.ManyToManyField(MovieGenre, related_name='movie_users')
     favorite_book_genres = models.ManyToManyField(BookGenre, related_name='book_users')
     favorite_countries = models.ManyToManyField(Country, related_name='country_users')

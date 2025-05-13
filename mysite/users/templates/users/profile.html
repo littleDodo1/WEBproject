@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -204,7 +206,7 @@
 </head>
 <body>
     <div class="logo_1">
-        /* <a href="{% url 'search:browse' %}"><img src="Лого проект питон.png" height="55" alt="Лого"></a> */
+        /* <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a> */
     </div>
     <!-- <header class="shapka">
         <div class="logo_1">
@@ -213,7 +215,7 @@
         <div class="profile-container">
             <!-- Иконка профиля в правом верхнем углу -->
             <div class="profile-icon">
-                <img src="pfp.png" alt="Иконка профиля" onclick="toggleDropdown()">
+                <img src="{% static 'users/img/pfp.png' %}" alt="Иконка профиля" onclick="toggleDropdown()">
                 <div id="profileDropdown" class="dropdown-menu">
                     <a href="#">Сменить аккаунт</a>
                     <a href="#">Выйти из аккаунта</a>
@@ -234,8 +236,8 @@
         
         <div class="section">
             <div class="section-title">Мои рекомендации</div>
-            <div class="menu-item"><a href="">Книги</a></div>
-            <div class="menu-item"><a href="">Фильмы</a></div>
+            <div class="menu-item"><a href="{% url 'recommendations_books' %}">Книги</a></div>
+            <div class="menu-item"><a href="{% url 'recommendations_movies' %}">Фильмы</a></div>
         </div>
         
         <div class="section">

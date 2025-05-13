@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'users/css/password_reset_done.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <video autoplay loop muted class="bgvideo">
+        <source src="{% static 'users/vid/007_03.mp4' %}" type="video/mp4">
+    </video>
+    <div class="container">
+        <div class="content">
+            <p>Вы успешно зарегистрировались</p>
+        </div>
+
+        <div class="return-link">
+            <a href="{% url 'index' %}">← Вернуться на главную</a>
+        </div>
+    </div>
+</body>
+</html>

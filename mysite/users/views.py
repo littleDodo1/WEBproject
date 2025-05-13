@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .forms import RegisterForm
 from .models import *
@@ -9,13 +10,17 @@ from search.movie_api_utils import *
 from search.books_api_utils import *
 
 
-
 def index(request):
     return render(request, 'users/index.html')
 
 
+def ReDone(request):
+    return render(request, 'users/register_done.html')
+
+
 def AboutUs(request):
     return render(request, 'users/info_about_us.html')
+
 
 def profile_view(request):
     return render(request, 'users/profile.html')
@@ -24,10 +29,7 @@ def profile_view(request):
 class RegisterUser(CreateView):
     form_class = RegisterForm
     template_name = 'users/register.html'
-
-    def get_success_url(self):
-        redirect_to = self.request.GET.get("next") or "/"
-        return f'/login/?next={redirect_to}'
+    success_url = reverse_lazy('redone')
 
 
 class LoginUser(LoginView):
@@ -37,6 +39,7 @@ class LoginUser(LoginView):
     def get_success_url(self):
         redirect_to = self.request.POST.get("next", "/")
         return redirect_to
+
 
 @login_required(login_url='login')
 def add_review(request, item_type, id):
@@ -60,6 +63,7 @@ def add_review(request, item_type, id):
             return redirect('search:film_page', id)
 
         return render(request, 'users/add_review.html', {'movie': movie, 'item_type': 'movie'})
+    
     if item_type == "book":
         if request.method == "GET":
             book = get_cached_book(id)
@@ -80,6 +84,7 @@ def add_review(request, item_type, id):
             return redirect('search:book_page', id)
 
         return render(request, 'users/add_review.html', {'book': book, 'item_type': 'book'})
+
 
 @login_required(login_url='login')
 def diary(request):

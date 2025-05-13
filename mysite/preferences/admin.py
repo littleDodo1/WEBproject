@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Preference, MovieGenre, BookGenre, Country, Decade, MovieDirector, BookAuthor
 # Register your models here.
+
+
 @admin.register(BookGenre)
 class BookGenreAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
