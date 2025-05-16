@@ -11,6 +11,10 @@ import os
 load_dotenv()
 
 @login_required
+def profile_view(request):
+    return render(request, 'preferences/profile.html')
+
+@login_required
 def edit_preferences(request):
     try:
         preference = Preference.objects.get(user=request.user)
