@@ -81,20 +81,18 @@ def recommendations_movies(request):
     try:
         preference = Preference.objects.get(user=request.user)
     except Preference.DoesNotExist:
-        preference = None
+        return redirect('edit_preferences')
 
-    recommendations_movies = None
-
-    if preference:
-        preferences_data = {
-            'movie_genres': [genre.name for genre in preference.favorite_movie_genres.all()],
-            'countries': [country.name for country in preference.favorite_countries.all()],
-            'movie_decades': [decade.name for decade in preference.favorite_movie_decades.all()],
-            'movie_directors': [director.name for director in preference.favorite_movie_directors.all()],
-        }
-
+    if request.method == "POST":
         access_token = get_access_token()
         if access_token:
+            preferences_data = {
+                'movie_genres': [genre.name for genre in preference.favorite_movie_genres.all()],
+                'countries': [country.name for country in preference.favorite_countries.all()],
+                'movie_decades': [decade.name for decade in preference.favorite_movie_decades.all()],
+                'movie_directors': [director.name for director in preference.favorite_movie_directors.all()],
+            }
+
             prompt_movies = (
                 "Ты — помощник по подбору фильмов.\n\n"
                 "На основе предпочтений пользователя:\n"
@@ -107,12 +105,14 @@ def recommendations_movies(request):
                 "1. Название фильма — Режиссёр\n"
                 "Без комментариев и пояснений."
             )
-            recommendations_movies = ask_gigachat(prompt_movies, access_token)
-        else:
-            recommendations_movies = "Токен не получен"
+
+            recommendations = ask_gigachat(prompt_movies, access_token)
+            preference.saved_movie_recommendations = recommendations
+            preference.save()
+        return redirect('recommendations_movies')
 
     return render(request, 'preferences/recommendations_movies.html', {
-        'recommendations_movies': recommendations_movies,
+        'recommendations_movies': preference.saved_movie_recommendations,
         'preference': preference,
     })
 
@@ -121,20 +121,17 @@ def recommendations_books(request):
     try:
         preference = Preference.objects.get(user=request.user)
     except Preference.DoesNotExist:
-        preference = None
+        return redirect('edit_preferences')
 
-    recommendations_books = None
-
-    if preference:
-        preferences_data = {
-            'book_genres': [genre.name for genre in preference.favorite_book_genres.all()],
-            'countries': [country.name for country in preference.favorite_countries.all()],
-            'book_decades': [decade.name for decade in preference.favorite_book_decades.all()],
-            'book_authors': [author.name for author in preference.favorite_book_authors.all()],
-        }
-
+    if request.method == "POST":
         access_token = get_access_token()
         if access_token:
+            preferences_data = {
+                'book_genres': [genre.name for genre in preference.favorite_book_genres.all()],
+                'countries': [country.name for country in preference.favorite_countries.all()],
+                'book_decades': [decade.name for decade in preference.favorite_book_decades.all()],
+                'book_authors': [author.name for author in preference.favorite_book_authors.all()],
+            }
             prompt_books = (
                 "Ты — помощник по подбору книг.\n\n"
                 "На основе предпочтений пользователя:\n"
@@ -147,11 +144,12 @@ def recommendations_books(request):
                 "1. Название книги — Автор\n"
                 "Без комментариев и пояснений."
             )
-            recommendations_books = ask_gigachat(prompt_books, access_token)
-        else:
-            recommendations_books = "Токен не получен"
+            recommendations = ask_gigachat(prompt_books, access_token)
+            preference.saved_book_recommendations = recommendations
+            preference.save()
+        return redirect('recommendations_books')
 
     return render(request, 'preferences/recommendations_books.html', {
-        'recommendations_books': recommendations_books,
+        'recommendations_books': preference.saved_book_recommendations,
         'preference': preference,
     })

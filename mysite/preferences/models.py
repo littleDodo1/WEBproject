@@ -47,3 +47,5 @@ class Preference(models.Model):
     favorite_book_decades = models.ManyToManyField(Decade, related_name='book_decade_users')
     favorite_book_authors = models.ManyToManyField(BookAuthor, blank=True)
     favorite_movie_directors = models.ManyToManyField(MovieDirector, blank=True)
+    saved_movie_recommendations = models.TextField(blank=True, null=True)
+    saved_book_recommendations = models.TextField(blank=True, null=True)

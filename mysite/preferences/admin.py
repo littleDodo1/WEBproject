@@ -51,5 +51,5 @@ class PreferenceAdmin(admin.ModelAdmin):
         'favorite_book_authors',
         'favorite_movie_directors',
         'favorite_book_decades',
-        'favorite_movie_decades',
+        'favorite_movie_decades'
     )
