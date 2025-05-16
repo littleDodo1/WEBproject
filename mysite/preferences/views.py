@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from .forms import PreferenceForm
 from .models import Preference
 from django.contrib.auth.decorators import login_required
@@ -112,6 +113,7 @@ def recommendations_movies(request):
 
             recommendations = ask_gigachat(prompt_movies, access_token)
             preference.saved_movie_recommendations = recommendations
+            preference.movie_recommendations_updated = timezone.now()
             preference.save()
         return redirect('recommendations_movies')
 
@@ -150,6 +152,7 @@ def recommendations_books(request):
             )
             recommendations = ask_gigachat(prompt_books, access_token)
             preference.saved_book_recommendations = recommendations
+            preference.book_recommendations_updated = timezone.now()
             preference.save()
         return redirect('recommendations_books')
 

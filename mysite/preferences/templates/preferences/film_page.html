@@ -1,0 +1,138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{movie.name}} | FlickPage</title>
+    <link rel="stylesheet" href="{% static 'search/css/film_page.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><a href="{% url 'search:browse' %}"><img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого"></a></div>
+        <a href="#" class="user-icon"><img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет"></a>
+    </div>
+
+    <div class="container">
+        <div class="movie-header">
+            <img class="movie-poster" src="{{ movie.poster.url }}" alt="Постер фильма">
+            <div class="movie-info">
+                <h1>{{movie.name}}</h1>
+                {% if movie.alternativeName %}
+                    <p>Оригинальное название – {{movie.alternativeName|default_if_none:""}}</p>
+                {% endif %}
+                <p>{{movie.year}}</p>
+                {% if movie.ageRating %}
+                    <p>{{movie.ageRating|default_if_none:""}}+</p>
+                {% endif %}
+                <div class="ratings">
+                    {% if movie.rating.kp != 0 %}
+                    <div>КиноПоиск: {{movie.rating.kp}}</div>
+                    {% endif %}
+                    {% if movie.rating.imdb != 0 %}
+                    <div>IMDb: {{movie.rating.imdb}}</div>
+                    {% endif %}
+                    <div>FlickPage: {{ rating|default:"Нет оценок" }}</div>
+                </div>
+                <p> Страны:
+                    {% for country in movie.countries %}
+                        {{country.name}}
+                    {% endfor %}
+                </p>
+                <p> Жанры:
+                    {% for genre in movie.genres %}
+                        {{genre.name}}
+                    {% endfor %}
+                </p>
+
+                <form method="post" action="{% url 'search:film_page' movie.id %}">
+                    {% csrf_token %}
+                    <div class="add-to-watchlist">
+                        <button type="button" class="btn {% if is_wished %}active{% endif %}" id="watchlist-btn" onclick="toggleWatchlist()">
+                            <i class="fas {% if is_wished %}fa-check-circle{% else %}fa-plus-circle{% endif %}" id="watchlist-icon"></i> Хочу посмотреть
+                        </button>
+                    </div>
+                </form>
+
+
+                <div id="user-rating-block" {% if not user_rating %}style="display: none;"{% endif %}>
+                    <h3>Ваша оценка: {{ user_rating }}/10</h3>
+                    <a href="#" onclick="toggleRatingForm(); return false;"><i>Изменить</i></a>
+                </div>
+
+                <div id="rating-form-block" {% if user_rating %}style="display: none;"{% endif %}>
+                    <h3>Оцените фильм: </h3>
+                    <form method="post" action="{% url 'search:film_page' movie.id %}">
+                        {% csrf_token %}
+                        <div class="rating">
+                            <div class="stars">
+                                <input type="radio" id="star10" name="rating" value="10"><label for="star10">★</label>
+                                <input type="radio" id="star9" name="rating" value="9"><label for="star9">★</label>
+                                <input type="radio" id="star8" name="rating" value="8"><label for="star8">★</label>
+                                <input type="radio" id="star7" name="rating" value="7"><label for="star7">★</label>
+                                <input type="radio" id="star6" name="rating" value="6"><label for="star6">★</label>
+                                <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                            </div>
+                            <button style="margin-left: 20px;" type="submit" class="btn">Сохранить оценку</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="add-review-button">
+            {% if not is_reviewed %}
+                <a href="{% url 'add_review' 'movie' movie.id %}" class="btn">Добавить отзыв</a>
+            {% endif %}
+            {% if is_reviewed %}
+                <a href="{% url 'diary' %}" class="btn">Просмотреть в дневнике</a>
+            {% endif %}
+        </div>
+        <div class="movie-description">
+            <h2>Описание</h2>
+            <p>{{movie.description}}</p>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function toggleRatingForm() {
+        document.getElementById('user-rating-block').style.display = 'none';
+        document.getElementById('rating-form-block').style.display = 'block';
+    }
+
+    function toggleWatchlist() {
+        var button = document.getElementById("watchlist-btn");
+        var icon = document.getElementById("watchlist-icon");
+
+        fetch("{% url 'search:film_page' movie.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "isWished=true"
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'added') {
+                button.classList.add("active");
+                icon.classList.remove("fa-plus-circle");
+                icon.classList.add("fa-check-circle");
+            } else if (data.status === 'removed') {
+                button.classList.remove("active");
+                icon.classList.remove("fa-check-circle");
+                icon.classList.add("fa-plus-circle");
+            }
+        })
+    }
+</script>

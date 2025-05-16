@@ -43,12 +43,46 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+        .generate-form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .generate-button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .generate-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Рекомендации от GigaChat</h1>
+
+    <div class="generate-form">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="generate-button">Сгенерировать рекомендации</button>
+        </form>
+    </div>
+    
+    {% if preference.book_recommendations_updated %}
+    <div class="updated-date">
+        Обновлено: {{ preference.book_recommendations_updated|date:"d.m.Y H:i" }}
+    </div>
+    {% endif %}
 
     {% if recommendations_books %}
     <div class="section">

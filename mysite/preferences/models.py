@@ -49,3 +49,5 @@ class Preference(models.Model):
     favorite_movie_directors = models.ManyToManyField(MovieDirector, blank=True)
     saved_movie_recommendations = models.TextField(blank=True, null=True)
     saved_book_recommendations = models.TextField(blank=True, null=True)
+    book_recommendations_updated = models.DateTimeField(blank=True, null=True)
+    movie_recommendations_updated = models.DateTimeField(blank=True, null=True)
