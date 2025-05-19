@@ -1,7 +1,11 @@
 from .models import CachedMovies, MovieCollections, CachedMovieQueries
 import requests
+import os
+from dotenv import load_dotenv
 
-headers = {"X-API-KEY": "D0RKYS2-28GM34H-MFSAZQF-VPMDCKK"}
+load_dotenv()
+
+headers = {"X-API-KEY": os.getenv('API_KEY')}
 
 
 def get_cached_movie(kp_id):
