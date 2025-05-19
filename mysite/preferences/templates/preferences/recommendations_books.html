@@ -22,11 +22,22 @@
             text-align: center;
             color: #333;
         }
-        p {
+        .recommendation-list {
             font-size: 18px;
             color: #555;
             line-height: 1.6;
-            white-space: pre-wrap;
+        }
+        .recommendation-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .movie-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .movie-link:hover {
+            text-decoration: underline;
         }
         .section {
             margin-bottom: 30px;
@@ -47,7 +58,6 @@
             text-align: center;
             margin-bottom: 30px;
         }
-
         .generate-button {
             background-color: #3498db;
             color: white;
@@ -59,10 +69,15 @@
             box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-
         .generate-button:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
+        }
+        .updated-date {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -84,14 +99,26 @@
     </div>
     {% endif %}
 
-    {% if recommendations_books %}
+{% if recommendations %}
     <div class="section">
         <h2>Книги</h2>
-        <p>{{ recommendations_books }}</p>
+        <div class="recommendation-list">
+            {% for item in recommendations %}
+                <div class="recommendation-item">
+                    {% if item.book %}
+                        <a href="{% url 'search:book_page' item.book_key %}" class="book-link">
+                            {{ item.text }}
+                        </a>
+                    {% else %}
+                        {{ item.text }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    {% else %}
+{% else %}
     <p>Нет рекомендаций по книгам.</p>
-    {% endif %}
+{% endif %}
 
     <div class="back-link">
         <a href="{% url 'profile' %}">Назад в профиль</a>

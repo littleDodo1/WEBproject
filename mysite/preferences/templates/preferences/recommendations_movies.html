@@ -22,11 +22,22 @@
             text-align: center;
             color: #333;
         }
-        p {
+        .recommendation-list {
             font-size: 18px;
             color: #555;
             line-height: 1.6;
-            white-space: pre-wrap;
+        }
+        .recommendation-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .movie-link {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .movie-link:hover {
+            text-decoration: underline;
         }
         .section {
             margin-bottom: 30px;
@@ -43,11 +54,10 @@
         .back-link a:hover {
             text-decoration: underline;
         }
-                .generate-form {
+        .generate-form {
             text-align: center;
             margin-bottom: 30px;
         }
-
         .generate-button {
             background-color: #3498db;
             color: white;
@@ -59,10 +69,15 @@
             box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-
         .generate-button:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
+        }
+        .updated-date {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -74,7 +89,7 @@
     <div class="generate-form">
         <form method="post">
             {% csrf_token %}
-            <button type="submit" class = "generate-button"> Сгенерировать рекомендации </button>
+            <button type="submit" class="generate-button">Сгенерировать рекомендации</button>
         </form>
     </div>
 
@@ -84,10 +99,23 @@
     </div>
     {% endif %}
 
-    {% if recommendations_movies %}
+    {% if recommendations %}
     <div class="section">
         <h2>Фильмы</h2>
-        <p>{{ recommendations_movies }}</p>
+        <div class="recommendation-list">
+            {% for item in recommendations %}
+                <div class="recommendation-item">
+                    {% if item.movie %}
+                        <!--<p>DEBUG: movie_id = {{ item.movie_id }}</p>-->
+                        <a href="{% url 'search:film_page' item.movie_id %}" class="movie-link">
+                            {{ item.text }}
+                        </a>
+                    {% else %}
+                        {{ item.text }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
     {% else %}
     <p>Нет рекомендаций по фильмам.</p>

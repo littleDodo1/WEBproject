@@ -2,6 +2,8 @@ from django.urls import path
 
 from . import views
 
+app_name = 'search'
+
 urlpatterns = [
     path('browse/', views.browse_page, name='browse'),
     path('film/<int:kp_id>/', views.film_page, name='film_page'),

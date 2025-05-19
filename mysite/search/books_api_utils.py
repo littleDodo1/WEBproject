@@ -3,16 +3,16 @@ from .models import *
 from users.models import Ratings, History
 
 def get_cached_book(key):
-    book_entry = CachedBooks.objects.filter(book_data__key=key).first()
+    book_entry = (CachedBooks.objects.filter(book_data__key=key).first() or CachedBooks.objects.filter(book_data__key=f"/works/{key}").first())
     if not book_entry:
         book_entry = BookCollections.objects.filter(book_data__key=key).first()
-    return book_entry.book_data if book_entry else None
+    return (book_entry.book_data, book_entry.content) if book_entry else (None, None)
 
 
-def cache_book(book):
+def cache_book(book, content=None):
     if CachedBooks.objects.count() >= 50:
         CachedBooks.objects.order_by("id").first().delete()
-    CachedBooks.objects.create(book_data=book)
+    CachedBooks.objects.create(book_data=book, content=content)
 
 
 def cache_book_query(query, genres, book_data):

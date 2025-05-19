@@ -2,12 +2,25 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .forms import PreferenceForm
 from .models import Preference
+from search.models import CachedBooks, CachedMovies
 from django.contrib.auth.decorators import login_required
-import requests
-import urllib3
-import uuid
+import requests, urllib3, uuid, os, re
+from search.movie_api_utils import (
+    fetch_kinopoisk_movie,
+    get_cached_movie,
+    cache_movie,
+    cache_query,
+    fetch_movie_search,
+    sort_movies
+)
+from search.books_api_utils import (
+    fetch_books_search,
+    cache_book_query,
+    sort_books,
+    get_cached_book, fetch_single_book, cache_book
+)
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
@@ -80,14 +93,108 @@ def ask_gigachat(prompt, access_token):
     if response.status_code == 200:
         return response.json()['choices'][0]['message']['content']
     return "Oops, нейросеть не смогла найти ответ..."
+def attach_movies_to_recommendations(recommendations):
+    for rec in recommendations:
+        text = rec.get("text", "")
+        match = re.search(r"[«\"](.+?)[»\"]", text)
+        if match:
+            title = match.group(1)
+        else:
+            title = text.split("—")[0].split("(")[0].strip()
+            title = " ".join(title.split()[:3])
 
+        #print(f"Название: {title}") Debug
+
+        search_results = fetch_movie_search(title, years="", country="", genres="")
+        if search_results:
+            movie_data = search_results[0]
+            kp_id = movie_data.get('id')
+            cached = get_cached_movie(kp_id)
+            print(cached)
+            if cached:
+                rec["movie"] = cached
+                rec["movie_id"] = cached.get('id')
+               #print(f"Найден в кеше {cached.get('name')}") Debug
+            else:
+                full_data = fetch_kinopoisk_movie(kp_id)
+                if full_data:
+                    cache_movie(full_data)
+                    rec["movie"] = full_data
+                    rec["movie_id"] = full_data.get('id')
+                    #print(f"Найден через API и закэширован {full_data.get('name')}") Debug
+                else:
+                    rec["movie"] = None
+                    rec["movie_id"] = None
+                    #print(f"Ошибка при получении данных по ID {kp_id}") Debug
+        else:
+            rec["movie"] = None
+            rec["movie_id"] = None
+            #print(f"Не найден в кеше и API {title}") Debug
+
+    return recommendations
+def attach_books_to_recommendations(recommendations):
+    for rec in recommendations:
+        text = rec.get("text", "")
+        match = re.search(r'[«"](.+?)[»"]', text)
+        if match:
+            title = match.group(1)
+        else:
+            title = text.split("—")[0].split("(")[0].strip()
+            title = " ".join(title.split()[:3])
+
+        #print(f"Поиск {title}") Debug
+        search_results = fetch_books_search(title, genres="")
+        if search_results:
+            api_book_data = search_results[0]
+            key = api_book_data.get('key', '')
+
+            book_data, content = get_cached_book(key)
+
+            if book_data:
+                rec["book"] = book_data
+                rec["summary"] = content
+                key = book_data.get('key', '')
+                if key.startswith('/works/'):
+                    rec["book_key"] = key.replace('/works/', '')
+                else:
+                    rec["book_key"] = key
+                #print(f"Найден в кеше {book_data.get('title')}") Debug
+            else:
+                access_token = get_access_token()
+                if access_token:
+                    prompt = (
+                        "Ты помощник по генерации краткого содержания книг.\n\n"
+                        "Напиши без каких либо комментариев, благодарения, вопросов от тебя 6 предложений о книге.\n"
+                        "Мне нужно только описание без лишних слов, также учитывай что в названиях могут быть литературные слова\n"
+                        f"Название книги: {title}"
+                    )
+                    summary = ask_gigachat(prompt, access_token)
+                else:
+                    summary = ""
+
+                cache_book(api_book_data, content=summary)
+                rec["book"] = api_book_data
+                rec["summary"] = summary
+                key = api_book_data.get('key', '')
+                if key.startswith('/works/'):
+                    rec["book_key"] = key.replace('/works/', '')
+                else:
+                    rec["book_key"] = key
+                #print(f"Найден через API и закэширован {api_book_data.get('title')}") Debug
+        else:
+            rec["book"] = None
+            rec["summary"] = None
+            rec["book_key"] = None
+            #print(f"Не найден в кеше и API {title}") Debug
+
+    return recommendations
 @login_required
 def recommendations_movies(request):
     try:
         preference = Preference.objects.get(user=request.user)
     except Preference.DoesNotExist:
         return redirect('edit_preferences')
-
+    
     if request.method == "POST":
         access_token = get_access_token()
         if access_token:
@@ -115,10 +222,14 @@ def recommendations_movies(request):
             preference.saved_movie_recommendations = recommendations
             preference.movie_recommendations_updated = timezone.now()
             preference.save()
-        return redirect('recommendations_movies')
-
+    recommendations_list = []
+    if preference.saved_movie_recommendations:
+        for line in preference.saved_movie_recommendations.splitlines():
+            if line.strip():
+                recommendations_list.append({'text': line.strip()})
+        recommendations_list = attach_movies_to_recommendations(recommendations_list)
     return render(request, 'preferences/recommendations_movies.html', {
-        'recommendations_movies': preference.saved_movie_recommendations,
+        'recommendations': recommendations_list,
         'preference': preference,
     })
 
@@ -156,7 +267,13 @@ def recommendations_books(request):
             preference.save()
         return redirect('recommendations_books')
 
+    recommendations_list = []
+    if preference.saved_book_recommendations:
+        for line in preference.saved_book_recommendations.splitlines():
+            if line.strip():
+                recommendations_list.append({'text': line.strip()})
+        recommendations_list = attach_books_to_recommendations(recommendations_list)
     return render(request, 'preferences/recommendations_books.html', {
-        'recommendations_books': preference.saved_book_recommendations,
+        'recommendations': recommendations_list,
         'preference': preference,
     })

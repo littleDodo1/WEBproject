@@ -83,7 +83,13 @@
         </div>
         <div class="movie-description">
             <h2>Описание</h2>
-            <p>{{book.description|default:"У этой книги пока нет описания :("}}</p>
+            {% if summary %}
+                <p>{{ summary }}</p>
+            {% elif book.description %}
+                <p>{{ book.description }}</p>
+            {% else %}
+                <p>У этой книги пока нет описания :(</p>
+            {% endif %}
         </div>
     </div>
 </body>

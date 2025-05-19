@@ -115,17 +115,23 @@ def book_page(request, key):
     if History.objects.count() >= 100:
         History.objects.order_by("id").first().delete()
     History.objects.update_or_create(user=request.user, item_type="book", item_id=key)
-    book = get_cached_book(key)
+    cached_obj = CachedBooks.objects.filter(book_data__key=f"/works/{key}").first()
+    summary = cached_obj.content if cached_obj else None
+    book, smth = get_cached_book(key)
     if not book:
         book = fetch_single_book(key)
         if book:
-            cache_book(book)
+            summary = book.get("description", "")
+            if isinstance(summary, dict):
+                summary = summary.get("value", "")
+            cache_book(book, summary)
     return render(request, 'search/book_page.html', {
             'book': book,
             'rating': avg_rating,
             'user_rating': user_rating,
             'is_reviewed': is_reviewed,
-            'is_wished': is_wished
+            'is_wished': is_wished,
+            'summary': summary
         })
 
 
