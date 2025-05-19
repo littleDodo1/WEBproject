@@ -1,6 +1,8 @@
 import requests
 from .models import *
 from users.models import Ratings, History
+from django.db.models import Avg
+
 
 def get_cached_book(key):
     book_entry = CachedBooks.objects.filter(book_data__key=key).first()
@@ -37,31 +39,35 @@ def fetch_books_search(query, genres):
         return None
     return response.json().get("works", [])
 
+
+def RatingValue(book_data):
+    book_id = book_data.get("key").split('/')[-1]
+    ratings = Ratings.objects.filter(item_type='book', item_id=book_id).aggregate(Avg("grade")).get("grade__avg")
+    return ratings if ratings else 0
+
+
+def VotesValue(book_data):
+    book_id = book_data.get("key").split('/')[-1]
+    votes = History.objects.filter(item_type='book', item_id=book_id).count()
+    return votes if votes else 0
+
+
 def sort_books(data, sort_by):
     if not data:
         return []
 
-    keys = [x.get("key") for x in data]
-
-    ratings_count = Ratings.objects.filter(item_type='book', item_id__in=keys).values('item_id').annotate(count=models.Count('id'))
-    ratings_map = {entry['item_id']: entry['count'] for entry in ratings_count}
-
-    votes_count = History.objects.filter(item_type='book', item_id__in=keys).values('item_id').annotate(count=models.Count('id'))
-    votes_map = {entry['item_id']: entry['count'] for entry in votes_count}
-
     match sort_by:
         case "year_lb":
-            return sorted(data, key=lambda x: x.get("created", 0))
+            return sorted(data, key=lambda x: x.get("first_publish_year", 0))
         case "year_bl":
-            return sorted(data, key=lambda x: x.get("created", 0), reverse=True)
+            return sorted(data, key=lambda x: x.get("first_publish_year", 0), reverse=True)
         case "rating_lb":
-            return sorted(data, key=lambda x: ratings_map.get(x.get("key", ""), 0))
+            return sorted(data, key=lambda x: RatingValue(x))
         case "rating_bl":
-            return sorted(data, key=lambda x: ratings_map.get(x.get("key", ""), 0), reverse=True)
+            return sorted(data, key=lambda x: RatingValue(x), reverse=True)
         case "votes_lb":
-            return sorted(data, key=lambda x: votes_map.get(x.get("key", ""), 0))
+            return sorted(data, key=lambda x: VotesValue(x))
         case "votes_bl":
-            return sorted(data, key=lambda x: votes_map.get(x.get("key", ""), 0), reverse=True)
+            return sorted(data, key=lambda x: VotesValue(x), reverse=True)
         case _:
             return data
-

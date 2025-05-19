@@ -125,7 +125,7 @@ def book_page(request, key):
             'rating': avg_rating,
             'user_rating': user_rating,
             'is_reviewed': is_reviewed,
-            'is_wished': is_wished
+            'is_wished': is_wished,
         })
 
 

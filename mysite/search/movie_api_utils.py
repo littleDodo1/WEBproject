@@ -1,7 +1,7 @@
 from .models import CachedMovies, MovieCollections, CachedMovieQueries
 import requests
 
-headers = {"X-API-KEY": "сюда ключ"}
+headers = {"X-API-KEY": "D0RKYS2-28GM34H-MFSAZQF-VPMDCKK"}
 
 
 def get_cached_movie(kp_id):
