@@ -64,32 +64,6 @@ class LoginUser(LoginView):
     form_class = AuthenticationForm
     template_name = 'users/login-password.html'
 
-    def form_valid(self, form):
-        user = form.get_user()
-        
-        if not user.email_verify:
-            token = user.email_verify_token
-            
-            confirm_url = f"{settings.SITE_URL}/verify-email/{token}/"
-            message = (
-                f"Здравствуйте, {user.username}!\n\n"
-                f"Для входа в аккаунт необходимо подтвердить ваш email.\n"
-                f"Пожалуйста, перейдите по ссылке:\n{confirm_url}\n\n"
-                f"Спасибо!"
-            )
-            
-            send_mail(
-                "Подтверждение email",
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
-            
-            return redirect('redone')
-        
-        return super().form_valid(form)
-
     def get_success_url(self):
         redirect_to = self.request.POST.get("next", "/")
         return redirect_to
