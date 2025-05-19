@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -46,3 +47,5 @@ class RegisterForm(CustomUserCreationForm):
         if CustomUser.objects.filter(username=username).exists():
             raise ValidationError("Этот логин уже занят")
         return username
+    
+

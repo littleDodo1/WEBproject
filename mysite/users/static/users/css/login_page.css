@@ -131,3 +131,27 @@ body{
     height: auto;
     z-index: -9999;
   }
+
+  .alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ffeeba;
+}
+
+.btn-verify {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #ffc107;
+    color: #212529;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-verify:hover {
+    background-color: #e0a800;
+}

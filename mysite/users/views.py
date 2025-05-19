@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
@@ -8,6 +8,9 @@ from .forms import RegisterForm
 from .models import *
 from search.movie_api_utils import *
 from search.books_api_utils import *
+from django.contrib.auth import logout
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def index(request):
@@ -31,10 +34,61 @@ class RegisterUser(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('redone')
 
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.save()
+
+        token = user.generate_verify_token()
+
+        subject = 'Подтвердите ваш email'
+        confirm_url = f"{settings.SITE_URL}/verify-email/{token}/"
+        message = (
+            f"Здравствуйте, {user.username}!\n\n"
+            f"Пожалуйста, подтвердите ваш email, перейдя по ссылке:\n"
+            f"{confirm_url}\n\n"
+            f"Спасибо за регистрацию!"
+        )
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+
+        return super().form_valid(form) 
+
 
 class LoginUser(LoginView):
     form_class = AuthenticationForm
     template_name = 'users/login-password.html'
+
+    def form_valid(self, form):
+        user = form.get_user()
+        
+        if not user.email_verify:
+            token = user.email_verify_token
+            
+            confirm_url = f"{settings.SITE_URL}/verify-email/{token}/"
+            message = (
+                f"Здравствуйте, {user.username}!\n\n"
+                f"Для входа в аккаунт необходимо подтвердить ваш email.\n"
+                f"Пожалуйста, перейдите по ссылке:\n{confirm_url}\n\n"
+                f"Спасибо!"
+            )
+            
+            send_mail(
+                "Подтверждение email",
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+            
+            return redirect('redone')
+        
+        return super().form_valid(form)
 
     def get_success_url(self):
         redirect_to = self.request.POST.get("next", "/")
@@ -89,3 +143,27 @@ def add_review(request, item_type, id):
 @login_required(login_url='login')
 def diary(request):
     return render(request, 'users/diary.html')
+
+
+@login_required(login_url='login')
+def Profile(request):
+    user = request.user
+    context = {'username': user.username}
+
+    return render(request, 'users/profile.html', context)
+
+
+def custom_logout(request):
+    logout(request)
+    return redirect('index')
+
+
+def verify_email(request, token):
+    user = get_object_or_404(CustomUser, email_verify_token=token)
+    
+    user.email_verify = True
+    user.email_verify_token = ""
+    user.save()
+
+    return render(request, 'users/email_verified.html')
+

@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.crypto import get_random_string
 
 
 
@@ -8,7 +9,13 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    pass
+    email_verify = models.BooleanField(default=False)
+    email_verify_token = models.CharField(max_length=64, blank=True)
+    
+    def generate_verify_token(self):
+        self.email_verify_token = get_random_string(64)
+        self.save()
+        return self.email_verify_token
 
 
 class Ratings(models.Model):
