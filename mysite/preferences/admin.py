@@ -1,7 +1,5 @@
 from django.contrib import admin
 from .models import Preference, MovieGenre, BookGenre, Country, Decade, MovieDirector, BookAuthor
-# Register your models here.
-
 
 @admin.register(BookGenre)
 class BookGenreAdmin(admin.ModelAdmin):
@@ -42,8 +40,15 @@ class DecadeAdmin(admin.ModelAdmin):
 @admin.register(Preference)
 class PreferenceAdmin(admin.ModelAdmin):
     list_display = ('id', 'user')
-    search_fields = ('user__username',)
+    search_fields = ('user',)
     ordering = ('user',)
+    readonly_fields = (
+        'last_viewed_movie_genres',
+        'last_viewed_book_genres',
+        'last_viewed_countries',
+        'last_viewed_authors',
+        'last_viewed_directors'
+    )
     filter_horizontal = (
         'favorite_countries',
         'favorite_book_genres',

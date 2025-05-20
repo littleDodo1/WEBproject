@@ -34,3 +34,4 @@ class CachedBookQueries(models.Model):
 class CachedBooks(models.Model):
     book_data = models.JSONField()
     content = models.TextField(blank=True, null=True)
+    substance = models.TextField(blank=True, null=True)

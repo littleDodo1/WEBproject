@@ -1,0 +1,49 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Краткое содержание | {{ title }} | FlickPage</title>
+    <link rel="stylesheet" href="{% static 'search/css/book_substance.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <a href="{% url 'search:browse' %}">
+                <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+            </a>
+        </div>
+        <a href="#" class="user-icon">
+            <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="book-header">
+            <h1>{{ title }}</h1>
+            <a href="{% url 'search:book_page' book_key %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Назад к книге
+            </a>
+        </div>
+
+        <div class="substance-content">
+            <h2>Краткое содержание</h2>
+            <div class="content-text">
+                {% if substance %}
+                    {{ substance|linebreaks }}
+                {% else %}
+                    <p class="no-content">Краткое содержание недоступно.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

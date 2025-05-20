@@ -46,7 +46,6 @@ def edit_preferences(request):
 
     return render(request, 'preferences/edit_preferences.html', {'form': form})
 
-
 @login_required
 def view_preferences(request):
     try:
@@ -68,7 +67,7 @@ def get_access_token():
         'Authorization': f"Basic {os.getenv('API_AUTH_TOKEN')}"  # Токен
     }
 
-    response = requests.post(url, headers=headers, data=payload, verify=False)
+    response = requests.post(url, headers=headers, data=payload)
     if response.status_code == 200:
         return response.json().get('access_token')
     else:
@@ -89,7 +88,7 @@ def ask_gigachat(prompt, access_token):
         ]
     }
 
-    response = requests.post(url, headers=headers, json=json_data, verify=False)
+    response = requests.post(url, headers=headers, json=json_data)
     if response.status_code == 200:
         return response.json()['choices'][0]['message']['content']
     return "Oops, нейросеть не смогла найти ответ..."
@@ -103,33 +102,33 @@ def attach_movies_to_recommendations(recommendations):
             title = text.split("—")[0].split("(")[0].strip()
             title = " ".join(title.split()[:3])
 
-        #print(f"Название: {title}") Debug
+        #print(f"Название: {title}") #DEBUG
 
         search_results = fetch_movie_search(title, years="", country="", genres="")
         if search_results:
             movie_data = search_results[0]
             kp_id = movie_data.get('id')
             cached = get_cached_movie(kp_id)
-            print(cached)
             if cached:
                 rec["movie"] = cached
                 rec["movie_id"] = cached.get('id')
-               #print(f"Найден в кеше {cached.get('name')}") Debug
+                #print(f"Найден в кеше {cached.get('name')}") #DEBUG
             else:
                 full_data = fetch_kinopoisk_movie(kp_id)
+                print(f"полные данные\n{full_data}")
                 if full_data:
                     cache_movie(full_data)
                     rec["movie"] = full_data
                     rec["movie_id"] = full_data.get('id')
-                    #print(f"Найден через API и закэширован {full_data.get('name')}") Debug
+                    #print(f"Найден через API и закэширован {full_data.get('name')}") #DEBUG
                 else:
                     rec["movie"] = None
                     rec["movie_id"] = None
-                    #print(f"Ошибка при получении данных по ID {kp_id}") Debug
+                    #print(f"Ошибка при получении данных по ID {kp_id}") #DEBUG
         else:
             rec["movie"] = None
             rec["movie_id"] = None
-            #print(f"Не найден в кеше и API {title}") Debug
+            #print(f"Не найден в кеше и API {title}") #DEBUG
 
     return recommendations
 def attach_books_to_recommendations(recommendations):
@@ -141,38 +140,46 @@ def attach_books_to_recommendations(recommendations):
         else:
             title = text.split("—")[0].split("(")[0].strip()
             title = " ".join(title.split()[:3])
-
-        #print(f"Поиск {title}") Debug
+        #print(title) #DEBUG
+        #print(f"Поиск {title}") #DEBUG
         search_results = fetch_books_search(title, genres="")
         if search_results:
             api_book_data = search_results[0]
             key = api_book_data.get('key', '')
 
-            book_data, content = get_cached_book(key)
+            book_data, content, substance = get_cached_book(key)
 
             if book_data:
                 rec["book"] = book_data
                 rec["summary"] = content
+                rec["substance"] = substance
                 key = book_data.get('key', '')
                 if key.startswith('/works/'):
                     rec["book_key"] = key.replace('/works/', '')
                 else:
                     rec["book_key"] = key
-                #print(f"Найден в кеше {book_data.get('title')}") Debug
+                #print(f"Найден в кеше {book_data.get('title')}") #DEBUG
             else:
                 access_token = get_access_token()
                 if access_token:
-                    prompt = (
-                        "Ты помощник по генерации краткого содержания книг.\n\n"
+                    promptA = (
+                        "Ты - помощник по генерации краткого содержания книг.\n\n"
                         "Напиши без каких либо комментариев, благодарения, вопросов от тебя 6 предложений о книге.\n"
                         "Мне нужно только описание без лишних слов, также учитывай что в названиях могут быть литературные слова\n"
                         f"Название книги: {title}"
                     )
-                    summary = ask_gigachat(prompt, access_token)
+                    summary = ask_gigachat(promptA, access_token)
+                    promptB = (
+                        "Ты - помощник по генерации содержания книг.\n\n"
+                        "Напиши без каких либо комментариев, благодарения, вопросов от тебя 10-15 предложений о книге.\n"
+                        f"Название книги: {title}"
+                    )
+                    substance = ask_gigachat(promptB, access_token)   
                 else:
                     summary = ""
-
-                cache_book(api_book_data, content=summary)
+                    substance = ""  
+                
+                cache_book(api_book_data, content=summary, substance=substance)
                 rec["book"] = api_book_data
                 rec["summary"] = summary
                 key = api_book_data.get('key', '')
@@ -180,13 +187,14 @@ def attach_books_to_recommendations(recommendations):
                     rec["book_key"] = key.replace('/works/', '')
                 else:
                     rec["book_key"] = key
-                #print(f"Найден через API и закэширован {api_book_data.get('title')}") Debug
+                #print(f"Найден через API и закэширован {api_book_data.get('title')}") #DEBUG
         else:
             rec["book"] = None
             rec["summary"] = None
             rec["book_key"] = None
-            #print(f"Не найден в кеше и API {title}") Debug
-
+            rec["substance"] = None
+            #print(f"Не найден в кеше и API {title}") #DEBUG
+    #print(f"prefer   {substance}\n\n") #DEBUG
     return recommendations
 @login_required
 def recommendations_movies(request):
@@ -211,7 +219,11 @@ def recommendations_movies(request):
                 f"Жанры фильмов: {', '.join(preferences_data.get('movie_genres', []))}\n"
                 f"Любимые страны: {', '.join(preferences_data.get('countries', []))}\n"
                 f"Десятилетия фильмов: {', '.join(preferences_data.get('movie_decades', []))}\n"
-                f"Любимые режиссёры: {', '.join(preferences_data.get('movie_directors', []))}\n\n"
+                f"Любимые режиссёры: {', '.join(preferences_data.get('movie_directors', []))}\n"
+                f"Также недавно пользователь смотрел:\n"
+                f"Жанры: {', '.join(preference.last_viewed_movie_genres[-3:])}\n"
+                f"Страны: {', '.join(preference.last_viewed_countries[-3:])}\n"
+                f"Авторы: {', '.join(preference.last_viewed_directors[-3:])}\n\n"
                 "Порекомендуй 10 фильмов.\n"
                 "Просто напиши список фильмов в формате:\n"
                 "1. Название фильма — Режиссёр\n"
@@ -255,7 +267,10 @@ def recommendations_books(request):
                 f"Жанры книг: {', '.join(preferences_data.get('book_genres', []))}\n"
                 f"Любимые страны: {', '.join(preferences_data.get('countries', []))}\n"
                 f"Десятилетия книг: {', '.join(preferences_data.get('book_decades', []))}\n"
-                f"Любимые авторы: {', '.join(preferences_data.get('book_authors', []))}\n\n"
+                f"Любимые авторы: {', '.join(preferences_data.get('book_authors', []))}\n"
+                f"Также недавно пользователь смотрел:\n"
+                f"Жанры: {', '.join(preference.last_viewed_book_genres[-3:])}\n"
+                f"Авторы: {', '.join(preference.last_viewed_authors[-3:])}\n\n"
                 "Порекомендуй 10 книг.\n"
                 "Просто напиши список книг в формате:\n"
                 "1. Название книги — Автор\n"

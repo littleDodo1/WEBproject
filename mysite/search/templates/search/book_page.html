@@ -90,6 +90,13 @@
             {% else %}
                 <p>У этой книги пока нет описания :(</p>
             {% endif %}
+            {% if substance %}
+            <div class="summary-button">
+                <a href="{% url 'search:book_substance' book.key|cut:'/works/' %}" class="btn">
+                    <i class="fas fa-book-open"></i> Краткое содержание
+            {% endif %}
+                </a>
+            </div>
         </div>
     </div>
 </body>

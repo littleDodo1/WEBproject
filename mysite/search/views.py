@@ -3,7 +3,9 @@ from django.db.models import Avg
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from users.models import *
+from preferences.views import ask_gigachat, get_access_token
 from .models import *
+from preferences.models import Preference, MovieGenre, MovieDirector, Country, BookAuthor, BookGenre
 
 import requests
 
@@ -38,10 +40,21 @@ def film_page(request, kp_id):
         movie = fetch_kinopoisk_movie(kp_id)
         if movie:
             cache_movie(movie)
+    genres = [genre['name'] for genre in movie.get('genres', [])] if movie else []
+    countries = [country['name'] for country in movie.get('countries', [])] if movie else []
+    directors = [person['name'] for person in movie.get('persons', []) if person.get('enProfession') == 'director'] if movie else []
+    try:
+        preference = Preference.objects.get(user=request.user)
+        preference.add_last_viewed_movie_genres(genres)
+        preference.add_last_viewed_countries(countries)
+        preference.add_last_viewed_directors(directors)
+    except Preference.DoesNotExist:
+        pass
 
     if request.method == "POST":
         rating_value = request.POST.get("rating")
         is_wished = request.POST.get("isWished")
+
         if rating_value:
             Ratings.objects.update_or_create(
                 user=request.user,
@@ -74,6 +87,9 @@ def film_page(request, kp_id):
 
     return render(request, 'search/film_page.html', {
         'movie': movie,
+        'genres': genres,
+        'countries': countries,
+        'directors': directors,
         'rating': avg_rating,
         'user_rating': user_rating,
         'is_reviewed': is_reviewed,
@@ -83,9 +99,39 @@ def film_page(request, kp_id):
 
 @login_required(login_url='login')
 def book_page(request, key):
+    book, summary, substance = get_cached_book(key)
+    if not book:
+        book = fetch_single_book(key)
+        if book:
+            summary = book.get("description", "")
+            if isinstance(summary, dict):
+                summary = summary.get("value", "")
+            access_token = get_access_token()
+            if access_token:
+                prompt = (
+                    "Ты - помощник по генерации содержания книг.\n\n"
+                    f"Напиши краткое содержание книги '{book.get('title', '')}' "
+                    "на русском языке, 10-15 предложений.\n"
+                )
+                substance = ask_gigachat(prompt, access_token)
+            else:
+                substance = ""
+            cache_book(book, summary, substance)
+        
+    genres = book.get("subjects", [])[:5] if book else []
+    authors = [author.get("key", "") for author in book.get("authors", [])] if book else []
+
+    try:
+        preference = Preference.objects.get(user=request.user)
+        preference.add_last_viewed_book_genres(genres)
+        preference.add_last_viewed_authors(authors)
+    except Preference.DoesNotExist:
+        pass
+
     if request.method == "POST":
         rating_value = request.POST.get("rating")
         is_wished = request.POST.get("isWished")
+
         if rating_value:
             Ratings.objects.update_or_create(
                 user=request.user,
@@ -115,24 +161,30 @@ def book_page(request, key):
     if History.objects.count() >= 100:
         History.objects.order_by("id").first().delete()
     History.objects.update_or_create(user=request.user, item_type="book", item_id=key)
-    cached_obj = CachedBooks.objects.filter(book_data__key=f"/works/{key}").first()
-    summary = cached_obj.content if cached_obj else None
-    book, smth = get_cached_book(key)
-    if not book:
-        book = fetch_single_book(key)
-        if book:
-            summary = book.get("description", "")
-            if isinstance(summary, dict):
-                summary = summary.get("value", "")
-            cache_book(book, summary)
+    print(substance)
     return render(request, 'search/book_page.html', {
             'book': book,
+            'genres': genres,
+            'authors': authors,
             'rating': avg_rating,
             'user_rating': user_rating,
             'is_reviewed': is_reviewed,
             'is_wished': is_wished,
-            'summary': summary
+            'summary': summary,
+            'substance': substance
         })
+
+@login_required
+def book_substance_view(request, book_key):
+    book_data, content, substance = get_cached_book(f"/works/{book_key}")
+    
+    context = {
+        'title': book_data.get('title', 'Без названия'),
+        'substance': substance,
+        'book_key': book_key
+    }
+    
+    return render(request, 'search/book_substance.html', context)
 
 
 @login_required(login_url='login')
