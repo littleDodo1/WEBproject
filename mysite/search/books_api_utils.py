@@ -30,7 +30,6 @@ def fetch_single_book(key):
 def get_or_fetch_book(key):
     book = get_cached_book(key)
     if not book:
-        print('new')
         book = fetch_single_book(key)
         cache_book(book)
     return book
