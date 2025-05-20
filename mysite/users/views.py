@@ -66,10 +66,10 @@ class LoginUser(LoginView):
 
     def form_valid(self, form):
         user = form.get_user()
-        
+
         if not user.email_verify:
             token = user.email_verify_token
-            
+
             confirm_url = f"{settings.SITE_URL}/verify-email/{token}/"
             message = (
                 f"Здравствуйте, {user.username}!\n\n"
@@ -77,7 +77,7 @@ class LoginUser(LoginView):
                 f"Пожалуйста, перейдите по ссылке:\n{confirm_url}\n\n"
                 f"Спасибо!"
             )
-            
+
             send_mail(
                 "Подтверждение email",
                 message,
@@ -85,9 +85,9 @@ class LoginUser(LoginView):
                 [user.email],
                 fail_silently=False,
             )
-            
+
             return redirect('redone')
-        
+
         return super().form_valid(form)
 
     def get_success_url(self):
