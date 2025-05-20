@@ -25,6 +25,14 @@ def cache_movie(movie):
         CachedMovies.objects.order_by("id").first().delete()
     CachedMovies.objects.create(movie_data=movie)
 
+def get_or_fetch_movie(kp_id):
+    movie = get_cached_movie(int(kp_id))
+    if not movie:
+        print("new")
+        movie = fetch_kinopoisk_movie(kp_id)
+        cache_movie(movie)
+    return movie
+
 
 def cache_query(query, years, country, genres, movie_data):
     if CachedMovieQueries.objects.count() >= 50:

@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 import requests
 import urllib3
 import uuid
-from dotenv import load_dotenv
+'''from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv()'''
 
 @login_required
 def edit_preferences(request):

@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История | FlickPage</title>
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="stylesheet" href="{% static 'users/css/history.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+          <a href="{% url 'search:browse' %}">
+            <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+          </a>
+        </div>
+        <a href="{% url 'profile' %}" class="user-icon">
+          <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+        </a>
+    </header>
+    <h2>Вы интересовались этими фильмами и книгами</h2>
+    <div class="container">
+        {% for item in data %}
+            {% if item.type == 'movie' %}
+            <div class="grid-item">
+                <a href="{% url 'search:film_page' item.data.id %}">
+                    <div class="movie-card">
+                        <img src="{{ item.data.poster.url }}" alt="Movie Poster">
+                    </div>
+                    <div class="movie-title">{{ item.data.name }}</div>
+                </a>
+            </div>
+            {% endif %}
+            {% if item.type == 'book' %}
+                <div class="grid-item">
+                    <a href="{% url 'search:book_page' item.data.key|cut:'/works/' %}">
+                        <div class="movie-card">
+                            <img src="https://covers.openlibrary.org/b/id/{{ item.data.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+                        </div>
+                        <div class="movie-title">{{ item.data.title }}</div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</body>
+</html>

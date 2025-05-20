@@ -146,6 +146,18 @@
     </div>
 
     <script>
+        document.querySelector("form").addEventListener("submit", function (e) {
+            const type = document.getElementById("typeSelect").value;
+
+            if (type === "book") {
+                const genreSelect = document.querySelector("#bookFilters select");
+                if (!genreSelect.value) {
+                    genreSelect.focus();
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
         function toggleFilters() {
             let type = document.getElementById('typeSelect').value;
             document.getElementById('movieFilters').style.display = type === 'movie' ? 'block' : 'none';

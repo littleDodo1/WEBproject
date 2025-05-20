@@ -99,10 +99,7 @@ class LoginUser(LoginView):
 def add_review(request, item_type, id):
     if item_type == "movie":
         if request.method == "GET":
-            movie = get_cached_movie(id)
-            if not movie:
-                movie = fetch_kinopoisk_movie(id)
-                cache_movie(movie)
+            movie = get_or_fetch_movie(id)
 
         if request.method == "POST":
             review_text = request.POST.get("review", "").strip()
@@ -120,10 +117,7 @@ def add_review(request, item_type, id):
     
     if item_type == "book":
         if request.method == "GET":
-            book = get_cached_book(id)
-            if not book:
-                book = fetch_single_book(id)
-                cache_book(book)
+            book = get_or_fetch_book(id)
 
         if request.method == "POST":
             review_text = request.POST.get("review", "").strip()
@@ -144,6 +138,35 @@ def add_review(request, item_type, id):
 def diary(request):
     return render(request, 'users/diary.html')
 
+@login_required(login_url='login')
+def history(request):
+    raw_data = History.objects.filter(user=request.user)
+    data = []
+    for item in range(len(raw_data))[::-1]:
+        if item > 60:
+            break
+        if raw_data[item].item_type == "movie":
+            movie = get_or_fetch_movie(int(raw_data[item].item_id))
+            data.append({'type': 'movie','data': movie})
+        elif raw_data[item].item_type == "book":
+            book = get_or_fetch_book(raw_data[item].item_id)
+            data.append({'type': 'book', 'data': book})
+    return render(request, 'users/history.html', {'data': data})
+
+@login_required(login_url='login')
+def watchlist(request):
+    raw_data = WishList.objects.filter(user=request.user)
+    data = []
+    for item in range(len(raw_data))[::-1]:
+        if item > 60:
+            break
+        if raw_data[item].item_type == "movie":
+            movie = get_or_fetch_movie(int(raw_data[item].item_id))
+            data.append({'type': 'movie', 'data': movie})
+        elif raw_data[item].item_type == "book":
+            book = get_or_fetch_book(raw_data[item].item_id)
+            data.append({'type': 'book', 'data': book})
+    return render(request, 'users/watchlist.html', {'data': data})
 
 @login_required(login_url='login')
 def Profile(request):
