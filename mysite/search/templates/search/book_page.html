@@ -16,7 +16,7 @@
 <body>
     <div class="header">
         <div class="logo"><a href="{% url 'search:browse' %}"><img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого"></a></div>
-        <a href="#" class="user-icon"><img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет"></a>
+        <a href="{% url 'profile' %}" class="user-icon"><img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет"></a>
     </div>
 
     <div class="container">

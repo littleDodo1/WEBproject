@@ -37,6 +37,7 @@ def browse_page(request):
 def film_page(request, kp_id):
     movie = get_cached_movie(kp_id)
     if not movie:
+        print('new')
         movie = fetch_kinopoisk_movie(kp_id)
         if movie:
             cache_movie(movie)
