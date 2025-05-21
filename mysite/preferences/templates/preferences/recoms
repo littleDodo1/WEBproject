@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -6,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рекомендации фильмов | Flickpage</title>
+    <title>Рекомендации книг | Flickpage</title>
     <link rel="stylesheet" href="{% static 'users/css/main_page.css' %}">
     <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,13 +15,10 @@
         .container {
             max-width: 800px;
             margin: 30px auto;
-            background: rgba(0, 0, 0, 0.7867);
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            h1{
-                color: #fff;
-            }
         }
         
         h1, h2 {
@@ -33,7 +29,7 @@
         
         .recommendation-list {
             font-size: 18px;
-            color: antiquewhite;
+            color: #555;
             line-height: 1.6;
             margin: 20px 0;
         }
@@ -41,17 +37,17 @@
         .recommendation-item {
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #cfcdce;
+            border-bottom: 1px solid #eee;
         }
         
         .book-link {
-            color: #d95401;
+            color: #3498db;
             text-decoration: none;
             transition: color 0.3s;
         }
         
         .book-link:hover {
-            color: #d95401;
+            color: #2980b9;
             text-decoration: underline;
         }
         
@@ -61,7 +57,7 @@
         }
         
         .generate-button {
-            background-color: #d95401;
+            background-color: #3498db;
             color: white;
             padding: 12px 24px;
             font-size: 18px;
@@ -81,7 +77,7 @@
         
         .updated-date {
             text-align: center;
-            color: #ae1212;
+            color: #777;
             margin-bottom: 20px;
             font-style: italic;
         }
@@ -92,7 +88,7 @@
         }
         
         .back-link a {
-            color: #d95401;
+            color: #3498db;
             text-decoration: none;
             font-size: 18px;
             transition: color 0.3s;
@@ -108,9 +104,6 @@
             color: #777;
             font-size: 18px;
             margin: 30px 0;
-        }
-        .section h2{
-            color: #fff;
         }
     </style>
 </head>
@@ -138,20 +131,20 @@
                 </form>
             </div>
             
-            {% if preference.movie_recommendations_updated %}
+            {% if preference.book_recommendations_updated %}
             <div class="updated-date">
-                Обновлено: {{ preference.movie_recommendations_updated|date:"d.m.Y H:i" }}
+                Обновлено: {{ preference.book_recommendations_updated|date:"d.m.Y H:i" }}
             </div>
             {% endif %}
 
             {% if recommendations %}
                 <div class="section">
-                    <h2>Фильмы для Вас</h2>
+                    <h2>Книги</h2>
                     <div class="recommendation-list">
                         {% for item in recommendations %}
                             <div class="recommendation-item">
-                                {% if item.movie %}
-                                    <a href="{% url 'search:film_page' item.movie_id %}" class="book-link">
+                                {% if item.book %}
+                                    <a href="{% url 'search:book_page' item.book_key %}" class="book-link">
                                         {{ item.text }}
                                     </a>
                                 {% else %}

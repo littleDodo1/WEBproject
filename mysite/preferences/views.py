@@ -24,11 +24,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-@login_required
+@login_required(login_url='login')
 def profile_view(request):
-    return render(request, 'preferences/profile.html')
+    return render(request, 'profile.html')
 
-@login_required
+@login_required(login_url='login')
 def edit_preferences(request):
     try:
         preference = Preference.objects.get(user=request.user)
@@ -46,7 +46,7 @@ def edit_preferences(request):
 
     return render(request, 'preferences/edit_preferences.html', {'form': form})
 
-@login_required
+@login_required(login_url='login')
 def view_preferences(request):
     try:
         preference = Preference.objects.get(user=request.user)
@@ -115,7 +115,7 @@ def attach_movies_to_recommendations(recommendations):
                 #print(f"Найден в кеше {cached.get('name')}") #DEBUG
             else:
                 full_data = fetch_kinopoisk_movie(kp_id)
-                print(f"полные данные\n{full_data}")
+                #print(f"полные данные\n{full_data}")
                 if full_data:
                     cache_movie(full_data)
                     rec["movie"] = full_data
@@ -196,7 +196,7 @@ def attach_books_to_recommendations(recommendations):
             #print(f"Не найден в кеше и API {title}") #DEBUG
     #print(f"prefer   {substance}\n\n") #DEBUG
     return recommendations
-@login_required
+@login_required(login_url='login')
 def recommendations_movies(request):
     try:
         preference = Preference.objects.get(user=request.user)
@@ -245,7 +245,7 @@ def recommendations_movies(request):
         'preference': preference,
     })
 
-@login_required
+@login_required(login_url='login')
 def recommendations_books(request):
     try:
         preference = Preference.objects.get(user=request.user)
