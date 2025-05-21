@@ -14,7 +14,7 @@ urlpatterns = [
     path('diary/', views.diary, name='diary'),
     path('history/', views.history, name='history'),
     path('watchlist/', views.watchlist, name='watchlist'),
-    path('revandrat/', views.RevAndRate, name='rar'),
+    path('reviews/', views.RevAndRate, name='reviews'),
     path('password-reset/',
         PasswordResetView.as_view(
             template_name="users/password_reset_form.html",

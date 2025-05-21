@@ -93,19 +93,33 @@
             {% if not is_reviewed %}
                 <a href="{% url 'add_review' 'movie' movie.id %}" class="btn">Добавить отзыв</a>
             {% endif %}
+            {% if is_reviewed %}
+                <a href="{% url 'reviews' %}" class="btn">Просмотреть в дневнике</a>
+            {% endif %}
         </div>
-        
         <div class="movie-description">
             <h2>Описание</h2>
             <p>{{movie.description}}</p>
         </div>
 
-        <div class="review">
-            {% if is_reviewed %}
-                <h2>Ваш отзыв</h2>
-                <p>{{review}}</p>
-            {% endif %}
-        </div>
+       <div class="reviews">
+            <h2 class="review-word">Отзывы</h2>
+            {% for item in data %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <h3 class="review-nick">{{ item.nick }}</h3>
+                        {% if item.grade is not None %}
+                            <span class="review-grade">
+                                {{ item.grade }} <i class="fas fa-star"></i>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="review-content">
+                        <p>{{ item.review }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+       </div>
     </div>
 </body>
 </html>

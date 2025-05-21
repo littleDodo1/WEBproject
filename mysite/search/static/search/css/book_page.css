@@ -180,3 +180,65 @@ body {
 .add-to-watchlist button.active #watchlist-icon {
     content: "\f00c"; /* Код для галочки FontAwesome */
 }
+
+.reviews {
+    margin-top: 40px;
+}
+
+.review-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+
+}
+
+.review-word {
+    color: #333;
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.review-nick {
+    margin: 0;
+    color: #333;
+    font-size: 1.2em;
+    display: inline-block;
+    position: relative;
+    padding-right: 10px;
+}
+
+.review-grade {
+    background-color: #FF8800;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    order: 2; /* Перемещаем оценку на следующую позицию */
+}
+
+.review-grade i {
+    font-size: 0.9em;
+    color: #ffd700;
+}
+
+.review-content p {
+    margin: 0;
+    color: #555;
+    line-height: 1.6;
+    font-size: 1em;
+}

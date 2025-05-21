@@ -28,7 +28,6 @@ def cache_movie(movie):
 def get_or_fetch_movie(kp_id):
     movie = get_cached_movie(int(kp_id))
     if not movie:
-        print("new")
         movie = fetch_kinopoisk_movie(kp_id)
         cache_movie(movie)
     return movie

@@ -24,7 +24,7 @@
                 <a href="{% url 'logout' %}">Выйти из аккаунта</a>
             </div>
         </div>
-        <h1>Ваш профиль</h1>
+        <h1>Мой профиль</h1>
         
         <div class="username">{{ username }}</div>
         
@@ -36,21 +36,11 @@
         
         <div class="section">
             <div class="section-title">Дневник</div>
-            <div class="menu-item"><a href="{% url 'rar' %}">Оценки и отзывы</a></div>
-            <div class="menu-item"><a href="{% url 'watchlist' %}">Отложенное на потом</a></div>
+            <div class="menu-item"><a href="{% url 'reviews' %}">Мои отзывы</a></div>
+            <div class="menu-item"><a href="{% url 'watchlist' %}">Хочу посмотреть/прочитать</a></div>
             <div class="menu-item"><a href="{% url 'history' %}">История посещений</a></div>
         </div>
     </div>
-
-    <!-- <footer>
-        <div class="footer-title">Контакты для связи</div>
-        <div class="contact-links">
-            <a href="mailto:support@example.com" class="contact-link">Email</a>
-            <a href="tel:+1234567890" class="contact-link">Телефон</a>
-            <a href="https://t.me/example" class="contact-link">Telegram</a>
-            <a href="https://vk.com/example" class="contact-link">VK</a>
-        </div>
-    </footer> -->
 
     <script>
         document.getElementById('image-upload').addEventListener('change', function(event) {

@@ -66,9 +66,19 @@ def film_page(request, kp_id):
     user_rating_obj = rating_qs.filter(user=request.user).first()
     user_rating = user_rating_obj.grade if user_rating_obj else None
     is_reviewed = Reviews.objects.filter(item_type='movie', item_id=kp_id, user=request.user).exists()
-    review = '' if not is_reviewed else Reviews.objects.filter(item_type='movie', item_id=kp_id, user=request.user)[0].review
-
     is_wished = WishList.objects.filter(user=request.user, item_type='movie', item_id=kp_id).exists()
+    data = []
+
+    reviwes = Reviews.objects.filter(item_type='movie', item_id=kp_id)
+
+    for item in range(len(reviwes))[::-1]:
+        elem = reviwes[item]
+        nickname = CustomUser.objects.filter(id=elem.user_id)[0].username
+        review = elem.review
+        exists = Ratings.objects.filter(user=elem.user, item_id=kp_id).exists()
+        grade = Ratings.objects.filter(user=elem.user, item_id=kp_id)[0].grade if exists else None
+
+        data.append({'nick':nickname, 'review': review, 'grade': grade})
 
     if History.objects.count() >= 100:
         History.objects.order_by("id").first().delete()
@@ -80,8 +90,9 @@ def film_page(request, kp_id):
         'user_rating': user_rating,
         'is_reviewed': is_reviewed,
         'is_wished': is_wished,
-        'review': review,
+        'data': data,
     })
+
 
 
 @login_required(login_url='login')
@@ -112,9 +123,21 @@ def book_page(request, key):
     user_rating_obj = rating_qs.filter(user=request.user).first()
     user_rating = user_rating_obj.grade if user_rating_obj else None
     is_reviewed = Reviews.objects.filter(item_type='book', item_id=key, user=request.user).exists()
-    review = '' if not is_reviewed else Reviews.objects.filter(item_type='book', item_id=key, user=request.user)[0].review
 
     is_wished = WishList.objects.filter(user=request.user, item_type='book', item_id=key).exists()
+
+    data = []
+
+    reviews = Reviews.objects.filter(item_type='book', item_id=key)
+
+    for item in range(len(reviews))[::-1]:
+        elem = reviews[item]
+        nickname = CustomUser.objects.filter(id=elem.user_id)[0].username
+        review = elem.review
+        exists = Ratings.objects.filter(user=elem.user, item_id=key).exists()
+        grade = Ratings.objects.filter(user=elem.user, item_id=key)[0].grade if exists else None
+
+        data.append({'nick': nickname, 'review': review, 'grade': grade})
 
     if History.objects.count() >= 100:
         History.objects.order_by("id").first().delete()
@@ -124,15 +147,15 @@ def book_page(request, key):
         book = fetch_single_book(key)
         if book:
             cache_book(book)
-            
+
     return render(request, 'search/book_page.html', {
-            'book': book,
-            'rating': avg_rating,
-            'user_rating': user_rating,
-            'is_reviewed': is_reviewed,
-            'is_wished': is_wished,
-            'review': review
-        })
+        'book': book,
+        'rating': avg_rating,
+        'user_rating': user_rating,
+        'is_reviewed': is_reviewed,
+        'is_wished': is_wished,
+        'data': data,
+    })
 
 
 @login_required(login_url='login')
@@ -170,7 +193,6 @@ def search_results(request):
             else:
                 data = get_object_or_404(CachedBookQueries, genres=genres[0] if genres else "").book_data
         except Http404:
-            print("new")
             data = fetch_books_search(query, genres[0])
             cache_book_query(query, genres[0], data)
 

@@ -177,35 +177,25 @@ def watchlist(request):
 
 @login_required(login_url='login')
 def RevAndRate(request):
+    if request.method == "POST":
+        Reviews.objects.filter(user=request.user, item_id=request.POST.get("item_id"), item_type=request.POST.get("item_type")).delete()
+
     data = []
-    reviwes = Reviews.objects.filter(user=request.user)
+    reviews = Reviews.objects.filter(user=request.user)
 
-    for item in range(len(reviwes))[::-1]:
+    for item in range(len(reviews))[::-1]:
+        rating = Ratings.objects.filter(user=request.user, item_id=reviews[item].item_id)
+        if reviews[item].item_type == 'movie':
+            item_data = get_or_fetch_movie(int(reviews[item].item_id))
+            item_type = 'movie'
+        else:
+            item_data = get_or_fetch_book(reviews[item].item_id)
+            item_type = 'book'
+        if len(rating) > 0:
+            data.append({'type': item_type, 'data': item_data, 'review': reviews[item].review, 'rating': rating[0].grade, 'review_date': reviews[item].review_date, 'watch_date': reviews[item].watch_date})
+        else:
+            data.append({'type': item_type, 'data': item_data, 'review': reviews[item].review, 'review_date': reviews[item].review_date, 'watch_date': reviews[item].watch_date})
 
-        if reviwes[item].item_type == 'movie':
-            movie = get_or_fetch_movie(int(reviwes[item].item_id))
-            data.append({'type': 'movie', 'data': movie})
-
-        elif reviwes[item].item_type == 'book':
-            book = get_or_fetch_book(reviwes[item].item_id)
-            data.append({'type': 'book', 'data': book})
-
-    ratings = Ratings.objects.filter(user=request.user)
-
-    for item in range(len(ratings))[::-1]:
-
-        if ratings[item].item_type == 'movie':
-            movie = get_or_fetch_movie(int(ratings[item].item_id))
-
-            if {'type': 'movie', 'data': movie} not in data:
-                data.append({'type': 'movie', 'data': movie})
-
-        elif ratings[item].item_type == 'book':
-            book = get_or_fetch_book(ratings[item].item_id)
-
-            if {'type': 'movie', 'data': book} not in data:
-                data.append({'type': 'movie', 'data': book})
-    
     return render(request, 'users/reviews.html', {'data': data})
 
 
