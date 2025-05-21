@@ -77,13 +77,16 @@
             {% if not is_reviewed %}
                 <a href="{% url 'add_review' 'book' book.key|cut:'/works/' %}" class="btn">Добавить отзыв</a>
             {% endif %}
-            {% if is_reviewed %}
-                <a href="{% url 'diary' %}" class="btn">Просмотреть в дневнике</a>
-            {% endif %}
         </div>
         <div class="movie-description">
             <h2>Описание</h2>
             <p>{{book.description|default:"У этой книги пока нет описания :("}}</p>
+        </div>
+        <div class="review">
+            {% if is_reviewed %}
+                <h2>Ваш отзыв</h2>
+                <p>{{review}}</p>
+            {% endif %}
         </div>
     </div>
 </body>

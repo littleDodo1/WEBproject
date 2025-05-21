@@ -66,6 +66,7 @@ def film_page(request, kp_id):
     user_rating_obj = rating_qs.filter(user=request.user).first()
     user_rating = user_rating_obj.grade if user_rating_obj else None
     is_reviewed = Reviews.objects.filter(item_type='movie', item_id=kp_id, user=request.user).exists()
+    review = '' if not is_reviewed else Reviews.objects.filter(item_type='movie', item_id=kp_id, user=request.user)[0].review
 
     is_wished = WishList.objects.filter(user=request.user, item_type='movie', item_id=kp_id).exists()
 
@@ -78,7 +79,8 @@ def film_page(request, kp_id):
         'rating': avg_rating,
         'user_rating': user_rating,
         'is_reviewed': is_reviewed,
-        'is_wished': is_wished
+        'is_wished': is_wished,
+        'review': review,
     })
 
 
@@ -110,6 +112,7 @@ def book_page(request, key):
     user_rating_obj = rating_qs.filter(user=request.user).first()
     user_rating = user_rating_obj.grade if user_rating_obj else None
     is_reviewed = Reviews.objects.filter(item_type='book', item_id=key, user=request.user).exists()
+    review = '' if not is_reviewed else Reviews.objects.filter(item_type='book', item_id=key, user=request.user)[0].review
 
     is_wished = WishList.objects.filter(user=request.user, item_type='book', item_id=key).exists()
 
@@ -121,12 +124,14 @@ def book_page(request, key):
         book = fetch_single_book(key)
         if book:
             cache_book(book)
+            
     return render(request, 'search/book_page.html', {
             'book': book,
             'rating': avg_rating,
             'user_rating': user_rating,
             'is_reviewed': is_reviewed,
-            'is_wished': is_wished
+            'is_wished': is_wished,
+            'review': review
         })
 
 

@@ -138,35 +138,76 @@ def add_review(request, item_type, id):
 def diary(request):
     return render(request, 'users/diary.html')
 
+
 @login_required(login_url='login')
 def history(request):
     raw_data = History.objects.filter(user=request.user)
     data = []
+
     for item in range(len(raw_data))[::-1]:
-        if item > 60:
-            break
+
         if raw_data[item].item_type == "movie":
             movie = get_or_fetch_movie(int(raw_data[item].item_id))
             data.append({'type': 'movie','data': movie})
+
         elif raw_data[item].item_type == "book":
             book = get_or_fetch_book(raw_data[item].item_id)
             data.append({'type': 'book', 'data': book})
+
     return render(request, 'users/history.html', {'data': data})
+
 
 @login_required(login_url='login')
 def watchlist(request):
     raw_data = WishList.objects.filter(user=request.user)
     data = []
+
     for item in range(len(raw_data))[::-1]:
-        if item > 60:
-            break
+
         if raw_data[item].item_type == "movie":
             movie = get_or_fetch_movie(int(raw_data[item].item_id))
             data.append({'type': 'movie', 'data': movie})
+
         elif raw_data[item].item_type == "book":
             book = get_or_fetch_book(raw_data[item].item_id)
             data.append({'type': 'book', 'data': book})
+
     return render(request, 'users/watchlist.html', {'data': data})
+    
+
+@login_required(login_url='login')
+def RevAndRate(request):
+    data = []
+    reviwes = Reviews.objects.filter(user=request.user)
+
+    for item in range(len(reviwes))[::-1]:
+
+        if reviwes[item].item_type == 'movie':
+            movie = get_or_fetch_movie(int(reviwes[item].item_id))
+            data.append({'type': 'movie', 'data': movie})
+
+        elif reviwes[item].item_type == 'book':
+            book = get_or_fetch_book(reviwes[item].item_id)
+            data.append({'type': 'book', 'data': book})
+
+    ratings = Ratings.objects.filter(user=request.user)
+
+    for item in range(len(ratings))[::-1]:
+
+        if ratings[item].item_type == 'movie':
+            movie = get_or_fetch_movie(int(ratings[item].item_id))
+
+            if {'type': 'movie', 'data': movie} not in data:
+                data.append({'type': 'movie', 'data': movie})
+
+        elif ratings[item].item_type == 'book':
+            book = get_or_fetch_book(ratings[item].item_id)
+
+            if {'type': 'movie', 'data': book} not in data:
+                data.append({'type': 'movie', 'data': book})
+    
+    return render(request, 'users/reviews.html', {'data': data})
+
 
 @login_required(login_url='login')
 def Profile(request):
@@ -189,4 +230,3 @@ def verify_email(request, token):
     user.save()
 
     return render(request, 'users/email_verified.html')
-
