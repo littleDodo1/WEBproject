@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from users.models import *
@@ -13,21 +13,36 @@ from .movie_api_utils import (
     cache_movie,
     cache_query,
     fetch_movie_search,
-    sort_movies
+    sort_movies,
+    get_or_fetch_movie
 )
 from .books_api_utils import (
     fetch_books_search,
     cache_book_query,
     sort_books,
-    get_cached_book, fetch_single_book, cache_book
+    get_cached_book,
+    fetch_single_book,
+    cache_book,
+    get_or_fetch_book
 )
 
 
 @login_required(login_url='login')
 def browse_page(request):
+    popular_data = []
+    popular = History.objects.annotate(count=Count('item_id')).order_by('count')[:20]
+    for item in popular:
+        if item.item_type == 'movie':
+            movie = get_or_fetch_movie(item.item_id)
+            if movie:
+                popular_data.append({'type': 'movie', 'data': movie})
+        else:
+            book = get_or_fetch_book(item.item_id)
+            if book:
+                popular_data.append({'type': 'book', 'data': book})
     return render(request, 'search/browse.html', {
         "new_movies": MovieCollections.objects.filter(topic_name='new'),
-        "new_books": BookCollections.objects.filter(topic_name='new')
+        "popular_items": popular_data
     })
 
 
@@ -35,7 +50,6 @@ def browse_page(request):
 def film_page(request, kp_id):
     movie = get_cached_movie(kp_id)
     if not movie:
-        print('new')
         movie = fetch_kinopoisk_movie(kp_id)
         if movie:
             cache_movie(movie)
@@ -69,10 +83,10 @@ def film_page(request, kp_id):
     is_wished = WishList.objects.filter(user=request.user, item_type='movie', item_id=kp_id).exists()
     data = []
 
-    reviwes = Reviews.objects.filter(item_type='movie', item_id=kp_id)
+    reviews = Reviews.objects.filter(item_type='movie', item_id=kp_id)
 
-    for item in range(len(reviwes))[::-1]:
-        elem = reviwes[item]
+    for item in range(len(reviews))[::-1]:
+        elem = reviews[item]
         nickname = CustomUser.objects.filter(id=elem.user_id)[0].username
         review = elem.review
         exists = Ratings.objects.filter(user=elem.user, item_id=kp_id).exists()
@@ -80,9 +94,10 @@ def film_page(request, kp_id):
 
         data.append({'nick':nickname, 'review': review, 'grade': grade})
 
-    if History.objects.count() >= 100:
-        History.objects.order_by("id").first().delete()
-    History.objects.update_or_create(user=request.user, item_type="movie", item_id=kp_id)
+    History.objects.filter(user=request.user, item_type="movie", item_id=kp_id).delete()
+    History.objects.create(user=request.user, item_type="movie", item_id=kp_id)
+    if History.objects.filter(user=request.user).count() > 60:
+        History.objects.filter(user=request.user).order_by("id").first().delete()
 
     return render(request, 'search/film_page.html', {
         'movie': movie,
@@ -139,9 +154,11 @@ def book_page(request, key):
 
         data.append({'nick': nickname, 'review': review, 'grade': grade})
 
-    if History.objects.count() >= 100:
-        History.objects.order_by("id").first().delete()
-    History.objects.update_or_create(user=request.user, item_type="book", item_id=key)
+    History.objects.filter(user=request.user, item_type="book", item_id=key).delete()
+    History.objects.create(user=request.user, item_type="book", item_id=key)
+    if History.objects.filter(user=request.user).count() > 60:
+        History.objects.filter(user=request.user).order_by("id").first().delete()
+
     book = get_cached_book(key)
     if not book:
         book = fetch_single_book(key)
@@ -169,7 +186,7 @@ def search_results(request):
     item_type = request.GET.get('search_type', '')
     years = request.GET.get('years', '')
     country = request.GET.get('country', '').split(",")
-    genres = request.GET.getlist('genre', '!церемония')
+    genres = request.GET.getlist('genre') or ['!церемония']
     sort_by = request.GET.get("sort_by", "")
     param_type = request.GET.get("type", "")
 
@@ -183,7 +200,9 @@ def search_results(request):
             data = fetch_movie_search(query, years, country, genres)
             cache_query(query, years, country, genres, data)
 
+        print(genres)
         data = sort_movies(data, sort_by)
+        print(genres)
         return render(request, 'search/search_results.html', {"data": data})
 
     elif item_type == "book":

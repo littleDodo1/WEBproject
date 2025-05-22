@@ -87,6 +87,11 @@
         </div>
         <div class="reviews">
             <h2 class="review-word">Отзывы</h2>
+            {% if not data %}
+            <div class="movie-description">
+                <p>У этого фильма ещё нет отзывов😕. Оставьте отзыв первыми!</p>
+            </div>
+            {% endif %}
             {% for item in data %}
                 <div class="review-item">
                     <div class="review-header">

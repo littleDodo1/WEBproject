@@ -18,15 +18,18 @@
     </div>
     <div class="profile-container">
         <!-- Иконка профиля в правом верхнем углу -->
-        <div class="profile-icon">
-            <img src="{% static 'users/img/pfp.png' %}" alt="Иконка профиля" onclick="toggleDropdown()">
-            <div id="profileDropdown" class="dropdown-menu">
-                <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+        <div class="header-wrapper">
+            <h1>Мой профиль</h1>
+            <div class="profile-header">
+                <div class="username">{{ username }}</div>
+                <div class="profile-icon">
+                    <img src="{% static 'users/img/pfp.png' %}" alt="Иконка профиля" onclick="toggleDropdown()">
+                    <div id="profileDropdown" class="dropdown-menu">
+                        <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <h1>Мой профиль</h1>
-        
-        <div class="username">{{ username }}</div>
         
         <div class="section">
             <div class="section-title">Мои рекомендации</div>
@@ -37,6 +40,7 @@
         <div class="section">
             <div class="section-title">Дневник</div>
             <div class="menu-item"><a href="{% url 'reviews' %}">Мои отзывы</a></div>
+            <div class="menu-item"><a href="{% url 'rated' %}">Оценённое мной</a></div>
             <div class="menu-item"><a href="{% url 'watchlist' %}">Хочу посмотреть/прочитать</a></div>
             <div class="menu-item"><a href="{% url 'history' %}">История посещений</a></div>
         </div>

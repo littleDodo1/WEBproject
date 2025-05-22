@@ -107,26 +107,27 @@ h2 {
   font-size: 30px;
 }
 
-.movie-scroll-container {
+.scroll-container {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* Скрываем содержимое, выходящее за пределы */
+  overflow: hidden;
   width: 100%;
   padding: 20px 0;
+  margin: 20px 0;
 }
 
-.movie-row {
+.items-row {
   display: flex;
   gap: 20px;
-  transition: transform 0.4s ease-in-out; /* Плавный переход при скролле */
+  transition: transform 0.4s ease-in-out;
 }
 
-.movie-card {
-  width: 260px;  /* Ширина карточки */
-  aspect-ratio: 2 / 3; /* Соотношение сторон карточки */
-  background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный черный фон */
+.item-card {
+  width: 260px;
+  aspect-ratio: 2 / 3;
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -134,15 +135,22 @@ h2 {
   overflow: hidden;
 }
 
-
-.movie-card img {
+.item-card img {
   width: 100%;
   height: 90%;
   object-fit: cover;
   border-radius: 5px;
 }
 
-.prev-btn, .next-btn {
+.item-title {
+  margin-top: 10px;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+/* Кнопки навигации */
+.nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -156,21 +164,6 @@ h2 {
   border-radius: 50%;
 }
 
-.movie-title {
-  margin-top: 10px;
-  font-size: 16px;
-  color: white;
-  font-weight: 500;
-}
-
-.prev-btn {
-  left: 10px;
-}
-
-.next-btn {
-  right: 10px;
-}
-
-button:disabled {
-  background: rgba(0, 0, 0, 0.3);
-}
+.nav-btn--left { left: 10px; }
+.nav-btn--right { right: 10px; }
+.nav-btn:disabled { background: rgba(0, 0, 0, 0.3); }

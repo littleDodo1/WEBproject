@@ -24,6 +24,10 @@
 </header>
 
 <div class="container">
+    <h1>Мои отзывы</h1>
+    {% if not data %}
+        Вы ещё не оставили ни одного отзыва 😔
+    {% endif %}
     {% for item in data %}
     {% if item.type == 'movie' %}
     <a href="{% url 'search:film_page' item.data.id %}">

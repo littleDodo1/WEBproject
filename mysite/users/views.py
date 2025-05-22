@@ -176,6 +176,24 @@ def watchlist(request):
     
 
 @login_required(login_url='login')
+def rated_page(request):
+    raw_data = Ratings.objects.filter(user=request.user)
+    data = []
+
+    for item in range(len(raw_data))[::-1]:
+
+        if raw_data[item].item_type == "movie":
+            movie = get_or_fetch_movie(int(raw_data[item].item_id))
+            data.append({'type': 'movie', 'data': movie})
+
+        elif raw_data[item].item_type == "book":
+            book = get_or_fetch_book(raw_data[item].item_id)
+            data.append({'type': 'book', 'data': book})
+
+    return render(request, 'users/rated_page.html', {'data': data})
+
+
+@login_required(login_url='login')
 def RevAndRate(request):
     if request.method == "POST":
         Reviews.objects.filter(user=request.user, item_id=request.POST.get("item_id"), item_type=request.POST.get("item_type")).delete()
