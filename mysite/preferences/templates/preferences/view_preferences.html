@@ -1,138 +1,217 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Ваши предпочтения</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои предпочтения | Flickpage</title>
+    <link rel="stylesheet" href="{% static 'users/css/main_page.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9fafb;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
+        .preferences-container {
             max-width: 800px;
-            margin: 50px auto;
-            background: #fff;
+            margin: 30px auto;
+            background: rgba(0, 0, 0, 0.8);
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: #f0f0f0;
         }
-        h1, h2 {
+        
+        .preferences-title {
             text-align: center;
-            color: #333;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: #e0f7fa;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-            color: #00796b;
-            font-weight: 500;
-        }
-        .section {
+            color: #d95401;
+            font-family: 'Jost', sans-serif;
             margin-bottom: 30px;
+            font-size: 2.2em;
         }
+        
+        .preferences-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #d95401;
+        }
+        
+        .section-title {
+            color: #d95401;
+            font-family: 'Jost', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .preferences-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preferences-list li {
+            background: rgba(217, 84, 1, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(217, 84, 1, 0.5);
+            transition: all 0.3s;
+        }
+        
+        .preferences-list li:hover {
+            background: rgba(217, 84, 1, 0.4);
+            transform: translateY(-2px);
+        }
+        
         .edit-link {
             display: block;
             text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            background-color: #2196F3;
+            margin-top: 40px;
+            padding: 12px 0;
+            background-color: #d95401;
             color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: all 0.3s;
+            font-family: 'Jost', sans-serif;
         }
+        .back-link {
+            color: #b34600;
+            text-align: center;
+            margin-top: 30px;
+        }
+
         .edit-link:hover {
-            background-color: #1976d2;
+            background-color: #b34600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(217, 84, 1, 0.3);
         }
-        p {
+        
+        .no-preferences {
             text-align: center;
             font-size: 18px;
-            color: #777;
+            margin: 30px 0;
+            color: #aaa;
+        }
+        
+        .no-preferences a {
+            color: #d95401;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .no-preferences a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Ваши предпочтения</h1>
-
-    {% if preference %}
-        <div class="section">
-            <h2>Любимые жанры фильмов</h2>
-            <ul>
-                {% for genre in preference.favorite_movie_genres.all %}
-                    <li>{{ genre.name }}</li>
-                {% endfor %}
-            </ul>
+    <header class="shapka">
+        <div class="logo_1">
+            <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
         </div>
-
-        <div class="section">
-            <h2>Любимые жанры книг</h2>
-            <ul>
-                {% for genre in preference.favorite_book_genres.all %}
-                    <li>{{ genre.name }}</li>
-                {% endfor %}
-            </ul>
+        <div class="profile_pic">
+            <a href="{% url 'profile' %}"><img src="{% static 'users/img/pfp.png' %}" width="60" alt="Иконка профиля"></a>
         </div>
+    </header>
 
-        <div class="section">
-            <h2>Любимые страны</h2>
-            <ul>
-                {% for country in preference.favorite_countries.all %}
-                    <li>{{ country.name }}</li>
-                {% endfor %}
-            </ul>
+    <main class="main">
+        <div class="preferences-container">
+            <h1 class="preferences-title">Мои предпочтения</h1>
+
+            {% if preference %}
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые жанры фильмов</h2>
+                    <ul class="preferences-list">
+                        {% for genre in preference.favorite_movie_genres.all %}
+                            <li>{{ genre.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые жанры книг</h2>
+                    <ul class="preferences-list">
+                        {% for genre in preference.favorite_book_genres.all %}
+                            <li>{{ genre.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые страны</h2>
+                    <ul class="preferences-list">
+                        {% for country in preference.favorite_countries.all %}
+                            <li>{{ country.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые десятилетия фильмов</h2>
+                    <ul class="preferences-list">
+                        {% for decade in preference.favorite_movie_decades.all %}
+                            <li>{{ decade.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые десятилетия книг</h2>
+                    <ul class="preferences-list">
+                        {% for decade in preference.favorite_book_decades.all %}
+                            <li>{{ decade.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые авторы</h2>
+                    <ul class="preferences-list">
+                        {% for author in preference.favorite_book_authors.all %}
+                            <li>{{ author.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="preferences-section">
+                    <h2 class="section-title">Любимые режиссеры</h2>
+                    <ul class="preferences-list">
+                        {% for director in preference.favorite_movie_directors.all %}
+                            <li>{{ director.name }}</li>
+                        {% empty %}
+                            <li>Не указаны</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <a href="{% url 'edit_preferences' %}" class="edit-link">Редактировать предпочтения</a>
+            {% else %}
+                <p class="no-preferences">Предпочтения ещё не указаны. <a href="{% url 'edit_preferences' %}">Заполнить сейчас</a></p>
+                <div class="back-link">
+                    <a href="{% url 'profile' %}">Назад в профиль</a>
+                </div>
+            {% endif %}
         </div>
-
-        <div class="section">
-            <h2>Любимые десятилетия фильмов</h2>
-            <ul>
-                {% for decade in preference.favorite_movie_decades.all %}
-                    <li>{{ decade.name }}</li>
-                {% endfor %}
-            </ul>
+        <div class="back-link">
+            <a href="{% url 'profile' %}">Назад в профиль</a>
         </div>
-
-        <div class="section">
-            <h2>Любимые десятилетия книг</h2>
-            <ul>
-                {% for decade in preference.favorite_book_decades.all %}
-                    <li>{{ decade.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>Любимые авторы</h2>
-            <ul>
-                {% for author in preference.favorite_book_authors.all %}
-                    <li>{{ author.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>Любимые режиссеры</h2>
-            <ul>
-                {% for director in preference.favorite_movie_directors.all %}
-                    <li>{{ director.name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <a href="{% url 'edit_preferences' %}" class="edit-link">Редактировать предпочтения</a>
-    {% else %}
-        <p>Предпочтения ещё не указаны. <a href="{% url 'edit_preferences' %}" class="edit-link">Заполнить</a></p>
-    {% endif %}
-</div>
-
+    </main>
 </body>
 </html>

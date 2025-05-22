@@ -1,90 +1,167 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Редактировать предпочтения</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать предпочтения | Flickpage</title>
+    <link rel="stylesheet" href="{% static 'users/css/main_page.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f4f8;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
+        .edit-container {
             max-width: 800px;
-            margin: 50px auto;
-            background: #fff;
+            margin: 30px auto;
+            background: rgba(0, 0, 0, 0.8);
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: #f0f0f0;
         }
-        h1 {
+        
+        .edit-title {
             text-align: center;
+            color: #d95401;
+            font-family: 'Jost', sans-serif;
             margin-bottom: 30px;
-            color: #333;
+            font-size: 2em;
         }
-        form {
+        
+        .preferences-form {
             display: flex;
             flex-direction: column;
+            gap: 25px;
         }
-        label {
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: #555;
+        
+        .form-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #d95401;
         }
+        
+        .form-label {
+            display: block;
+            color: #d95401;
+            font-family: 'Jost', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+        
         .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .checkbox-item {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
         }
-        .checkbox-group label {
-            font-weight: normal;
-        }
-        input[type="submit"] {
-            margin-top: 30px;
-            padding: 10px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 5px;
+        
+        .checkbox-item input[type="checkbox"] {
+            accent-color: #d95401;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        
+        .checkbox-item label {
+            cursor: pointer;
+            transition: color 0.3s;
         }
-        a.back-link {
-            display: inline-block;
+        
+        .checkbox-item:hover label {
+            color: #d95401;
+        }
+        
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
             margin-top: 20px;
-            text-decoration: none;
-            color: #4CAF50;
-            font-size: 16px;
+            background-color: #d95401;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: 'Jost', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        a.back-link:hover {
-            text-decoration: underline;
+        
+        .submit-button:hover {
+            background-color: #b34600;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(217, 84, 1, 0.3);
+        }
+        
+        .navigation-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-link {
+            color: #d95401;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: 1px solid #d95401;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(217, 84, 1, 0.2);
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
+    <header class="shapka">
+        <div class="logo_1">
+            <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
+        </div>
+        <div class="profile_pic">
+            <a href="{% url 'profile' %}"><img src="{% static 'users/img/pfp.png' %}" width="60" alt="Иконка профиля"></a>
+        </div>
+    </header>
 
-<div class="container">
-    <h1>Редактировать ваши предпочтения</h1>
+    <main class="main">
+        <div class="edit-container">
+            <h1 class="edit-title">Редактировать предпочтения</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <label>{{ field.label }}</label>
-            <div class="checkbox-group">
-                {{ field }}
+            <form method="post" class="preferences-form">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="form-group">
+                        <label class="form-label">{{ field.label }}</label>
+                        <div class="checkbox-group">
+                            {% for choice in field %}
+                                <div class="checkbox-item">
+                                    {{ choice.tag }}
+                                    <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                
+                <button type="submit" class="submit-button">Сохранить изменения</button>
+            </form>
+
+            <div class="navigation-links">
+                <a href="{% url 'view_preferences' %}" class="nav-link">← Назад к предпочтениям</a>
+                <a href="{% url 'profile' %}" class="nav-link">Назад в профиль →</a>
             </div>
-        {% endfor %}
-        <input type="submit" value="Сохранить">
-    </form>
-
-    <a href="{% url 'view_preferences' %}" class="back-link">Назад к просмотру предпочтений</a>
-</div>
-
+        </div>
+    </main>
 </body>
 </html>

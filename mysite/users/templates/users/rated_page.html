@@ -42,11 +42,11 @@
             {% endif %}
             {% if item.type == 'book' %}
                 <div class="grid-item">
-                    <a href="{% url 'search:book_page' item.data.key|cut:'/works/' %}">
+                    <a href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
                         <div class="movie-card">
-                            <img src="https://covers.openlibrary.org/b/id/{{ item.data.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+                            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
                         </div>
-                        <div class="movie-title">{{ item.data.title }}</div>
+                        <div class="movie-title">{{ item.data.0.title }}</div>
                     </a>
                 </div>
             {% endif %}

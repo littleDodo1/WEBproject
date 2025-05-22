@@ -73,9 +73,9 @@
         {% endif %}
         {% if item.type == 'book' %}
         <div class="item-card">
-          <a href="{% url 'search:book_page' item.data.key|cut:'/works/' %}">
-            <img src="https://covers.openlibrary.org/b/id/{{ item.data.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
-            <div class="item-title">{{ item.data.title }}</div>
+          <a href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
+            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+            <div class="item-title">{{ item.data.0.title }}</div>
           </a>
         </div>
         {% endif %}

@@ -57,13 +57,13 @@
 
   <div class="container">
     <div class="movie-block">
-      <a href="{% url 'search:book_page' book.key|cut:'/works/' %}">
-        <img class="poster" src="https://covers.openlibrary.org/b/id/{{ book.covers.0 }}-L.jpg" alt="Постер фильма">
-        <div class="movie-title">{{ book.title }}</div>
+      <a href="{% url 'search:book_page' book.0.key|cut:'/works/' %}">
+        <img class="poster" src="https://covers.openlibrary.org/b/id/{{ book.0.covers.0 }}-L.jpg" alt="Постер фильма">
+        <div class="movie-title">{{ book.0.title }}</div>
       </a>
     </div>
 
-    <form method="post" action="{% url 'add_review' item_type book.key|cut:'/works/' %}" class="review-form">
+    <form method="post" action="{% url 'add_review' item_type book.0.key|cut:'/works/' %}" class="review-form">
       {% csrf_token %}
 
       <div class="form-section">

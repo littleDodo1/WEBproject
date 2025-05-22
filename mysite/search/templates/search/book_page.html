@@ -21,9 +21,9 @@
 
     <div class="container">
         <div class="movie-header">
-            <img class="movie-poster" src="https://covers.openlibrary.org/b/id/{{ book.covers.0 }}-L.jpg" alt="Обложка книги">
+            <img class="movie-poster" src="https://covers.openlibrary.org/b/id/{{ book.0.covers.0 }}-L.jpg" alt="Обложка книги">
             <div class="movie-info">
-                <h1>{{book.title}}</h1>
+                <h1>{{book.0.title}}</h1>
                 {% if book.subject_times.0 %}
                     <p>{{ book.subject_times.0 }}</p>
                 {% endif %}
@@ -75,7 +75,7 @@
         </div>
         <div class="add-review-button">
             {% if not is_reviewed %}
-                <a href="{% url 'add_review' 'book' book.key|cut:'/works/' %}" class="btn">Добавить отзыв</a>
+                <a href="{% url 'add_review' 'book' book.0.key|cut:'/works/' %}" class="btn">Добавить отзыв</a>
             {% endif %}
             {% if is_reviewed %}
                 <a href="{% url 'reviews' %}" class="btn">Просмотреть в дневнике</a>
@@ -83,13 +83,26 @@
         </div>
         <div class="movie-description">
             <h2>Описание</h2>
-            <p>{{book.description|cut:"'type': '/type/text', 'value': "}}</p>
+            {% if summary %}
+                <p>{{ summary }}</p>
+            {% elif book.description %}
+                <p>{{book.description|cut:"'type': '/type/text', 'value': "}}</p>
+            {% else %}
+                <p>У этой книги пока нет описания 😕</p>
+            {% endif %}
+            {% if substance %}
+            <div class="summary-button">
+                <a href="{% url 'search:book_substance' book.key|cut:'/works/' %}" class="btn">
+                    <i class="fas fa-book-open"></i> Краткое содержание
+                </a>
+            </div>
+            {% endif %}
         </div>
         <div class="reviews">
             <h2 class="review-word">Отзывы</h2>
             {% if not data %}
             <div class="movie-description">
-                <p>У этого фильма ещё нет отзывов😕. Оставьте отзыв первыми!</p>
+                <p>У этой книги ещё нет отзывов😕. Оставьте отзыв первыми!</p>
             </div>
             {% endif %}
             {% for item in data %}
@@ -121,7 +134,7 @@
         var button = document.getElementById("watchlist-btn");
         var icon = document.getElementById("watchlist-icon");
 
-        fetch("{% url 'search:book_page' book.key|cut:'/works/' %}", {
+        fetch("", {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}',

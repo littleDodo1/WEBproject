@@ -32,11 +32,15 @@
         </div>
         
         <div class="section">
+            <div class="section-title">Мои предпочтения</div>
+            <div class="menu-item"><a href="{% url 'view_preferences' %}">Посмотреть</a></div>
+            <div class="menu-item"><a href="{% url 'edit_preferences' %}">Редактировать</a></div>
+        </div>
+        <div class="section">
             <div class="section-title">Мои рекомендации</div>
             <div class="menu-item"><a href="{% url 'recommendations_books' %}">Книги</a></div>
             <div class="menu-item"><a href="{% url 'recommendations_movies' %}">Фильмы</a></div>
         </div>
-        
         <div class="section">
             <div class="section-title">Дневник</div>
             <div class="menu-item"><a href="{% url 'reviews' %}">Мои отзывы</a></div>
@@ -74,5 +78,11 @@
             }
         }
     </script>
+
+    </div> <!-- Закрывающий тег для .profile-container -->
+
+    <div class="start-page-button">
+        <a href="{% url 'index' %}" class="button">На стартовую страницу</a>
+    </div>
 </body>
 </html>

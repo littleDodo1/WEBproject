@@ -135,11 +135,6 @@ def add_review(request, item_type, id):
 
 
 @login_required(login_url='login')
-def diary(request):
-    return render(request, 'users/diary.html')
-
-
-@login_required(login_url='login')
 def history(request):
     raw_data = History.objects.filter(user=request.user)
     data = []

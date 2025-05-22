@@ -186,3 +186,29 @@ footer {
 .show {
     display: block;
 }
+
+.start-page-button {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #FF8800;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 30px;
+}
+
+.button:hover {
+    background-color: #e68619;
+    color: white;
+}
+
