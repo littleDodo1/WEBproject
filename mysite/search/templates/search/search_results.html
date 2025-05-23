@@ -43,8 +43,13 @@
         <h2>Нашлось по вашему запросу</h2>
         <form method="get" class="sort-form">
             {% for key, value in request.GET.items %}
-                {% if key != 'sort_by' and value %}
+                {% if key != 'sort_by' and key != 'genre' and value %}
                     <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+            {% for key, values in request.GET.lists %}
+                {% if key == 'genre' %}
+                    {% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}
                 {% endif %}
             {% endfor %}
 

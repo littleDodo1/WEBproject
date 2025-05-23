@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .forms import PreferenceForm
 from .models import Preference
+from search.models import CachedBooks, CachedMovies
 from django.contrib.auth.decorators import login_required
 import re
 from search.movie_api_utils import (
@@ -175,7 +176,7 @@ def recommendations_movies(request):
                 f"Жанры: {', '.join(preference.last_viewed_movie_genres[-3:])}\n"
                 f"Страны: {', '.join(preference.last_viewed_countries[-3:])}\n"
                 f"Авторы: {', '.join(preference.last_viewed_directors[-3:])}\n\n"
-                "Порекомендуй 10 фильмов.\n"
+                "Порекомендуй 5 фильмов.\n"
                 "Просто напиши список фильмов в формате:\n"
                 "1. Название фильма — Режиссёр\n"
                 "Без комментариев и пояснений."
@@ -222,7 +223,7 @@ def recommendations_books(request):
                 f"Также недавно пользователь смотрел:\n"
                 f"Жанры: {', '.join(preference.last_viewed_book_genres[-3:])}\n"
                 f"Авторы: {', '.join(preference.last_viewed_authors[-3:])}\n\n"
-                "Порекомендуй 10 книг.\n"
+                "Порекомендуй 5 книг.\n"
                 "Просто напиши список книг в формате:\n"
                 "1. Название книги — Автор\n"
                 "Без комментариев и пояснений."

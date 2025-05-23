@@ -40,49 +40,76 @@
     </a>
   </header>
 
+  <!-- Для фильмов -->
   <h2>Новые фильмы</h2>
-  <div class="movie-scroll-container">
-    <button class="prev-btn" onclick="scrollMovies(-1)">←</button>
-    <div class="movie-row">
+  <div class="scroll-container">
+    <button class="nav-btn nav-btn--left" onclick="scrollMovies(-1)">←</button>
+    <div class="items-row">
       {% for movie in new_movies %}
-        <div class="movie-card">
+        <div class="item-card">
           <a href="{% url 'search:film_page' movie.movie_data.id %}">
             <img src="{{ movie.movie_data.poster.url }}" alt="Movie Poster">
-            <div class="movie-title">{{ movie.movie_data.name }}</div>
+            <div class="item-title">{{ movie.movie_data.name }}</div>
           </a>
         </div>
       {% endfor %}
     </div>
+    <button class="nav-btn nav-btn--right" onclick="scrollMovies(1)">→</button>
+  </div>
 
-    <button class="next-btn" onclick="scrollMovies(1)">→</button>
+  <!-- Для книг -->
+  <h2>Популярное среди пользователей</h2>
+  <div class="scroll-container">
+    <button class="nav-btn nav-btn--left" onclick="scrollBooks(-1)">←</button>
+    <div class="items-row">
+      {% for item in popular_items %}
+        {% if item.type == 'movie' %}
+        <div class="item-card">
+          <a href="{% url 'search:film_page' item.data.id %}">
+            <img src="{{ item.data.poster.url }}" alt="Poster">
+            <div class="item-title">{{ item.data.name }}</div>
+          </a>
+        </div>
+        {% endif %}
+        {% if item.type == 'book' %}
+        <div class="item-card">
+          <a href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
+            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+            <div class="item-title">{{ item.data.0.title }}</div>
+          </a>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <button class="nav-btn nav-btn--right" onclick="scrollBooks(1)">→</button>
   </div>
 
   <script>
-    let currentIndex = 0;
-    const moviesToShow = 6; // Показываем по 6 карточек
-    const movieRow = document.querySelector('.movie-row');
-    const movies = document.querySelectorAll('.movie-card');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
+    // Скрипт для фильмов
+    let currentMovieIndex = 0;
+    const movieRow = document.querySelectorAll('.items-row')[0]; // Первая секция
+    const movies = movieRow.querySelectorAll('.item-card');
+    const moviesToShow = 6;
 
     function scrollMovies(direction) {
-      const totalMovies = movies.length;
-      currentIndex += direction;
-
-      // Проверка границ (чтобы не выходить за пределы)
-      if (currentIndex < 0) currentIndex = 0;
-      if (currentIndex + moviesToShow > totalMovies) currentIndex = totalMovies - moviesToShow;
-
-      // Перемещаем ряд на нужную позицию
-      movieRow.style.transform = `translateX(-${currentIndex * (movies[0].offsetWidth*2 + 20)}px)`;
-
-      // Отключаем кнопки при достижении границ
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex + moviesToShow >= totalMovies;
+        const totalMovies = movies.length;
+        currentMovieIndex = Math.max(0,
+            Math.min(currentMovieIndex + direction, totalMovies - moviesToShow));
+        movieRow.style.transform = `translateX(-${currentMovieIndex * (movies[0].offsetWidth*3 + 60)}px)`;
     }
 
-    // Инициализируем кнопки
-    scrollMovies(0); // Убедимся, что кнопки в начальном состоянии
+    // Скрипт для книг
+    let currentBookIndex = 0;
+    const bookRow = document.querySelectorAll('.items-row')[1]; // Вторая секция
+    const books = bookRow.querySelectorAll('.item-card');
+    const booksToShow = 6;
+
+    function scrollBooks(direction) {
+        const totalBooks = books.length;
+        currentBookIndex = Math.max(0,
+            Math.min(currentBookIndex + direction, totalBooks - booksToShow));
+        bookRow.style.transform = `translateX(-${currentBookIndex * (books[0].offsetWidth*3 + 60)}px)`;
+    }
   </script>
 
 </body>

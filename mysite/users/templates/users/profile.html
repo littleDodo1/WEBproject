@@ -18,45 +18,37 @@
     </div>
     <div class="profile-container">
         <!-- Иконка профиля в правом верхнем углу -->
-        <div class="profile-icon">
-            <img src="{% static 'users/img/pfp.png' %}" alt="Иконка профиля" onclick="toggleDropdown()">
-            <div id="profileDropdown" class="dropdown-menu">
-                <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+        <div class="header-wrapper">
+            <h1>Мой профиль</h1>
+            <div class="profile-header">
+                <div class="username">{{ username }}</div>
+                <div class="profile-icon">
+                    <img src="{% static 'users/img/pfp.png' %}" alt="Иконка профиля" onclick="toggleDropdown()">
+                    <div id="profileDropdown" class="dropdown-menu">
+                        <a href="{% url 'logout' %}">Выйти из аккаунта</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <h1>Ваш профиль</h1>
-        
-        <div class="username">{{ username }}</div>
 
         <div class="section">
             <div class="section-title">Мои предпочтения</div>
             <div class="menu-item"><a href="{% url 'view_preferences' %}">Посмотреть</a></div>
             <div class="menu-item"><a href="{% url 'edit_preferences' %}">Редактировать</a></div>
         </div>
-        
         <div class="section">
             <div class="section-title">Мои рекомендации</div>
             <div class="menu-item"><a href="{% url 'recommendations_books' %}">Книги</a></div>
             <div class="menu-item"><a href="{% url 'recommendations_movies' %}">Фильмы</a></div>
         </div>
-        
         <div class="section">
             <div class="section-title">Дневник</div>
-            <div class="menu-item"><a href="">Оценки и отзывы</a></div>
-            <div class="menu-item"><a href="{% url 'watchlist' %}">Отложенное на потом</a></div>
+            <div class="menu-item"><a href="{% url 'reviews' %}">Мои отзывы</a></div>
+            <div class="menu-item"><a href="{% url 'rated' %}">Оценённое мной</a></div>
+            <div class="menu-item"><a href="{% url 'watchlist' %}">Хочу посмотреть/прочитать</a></div>
             <div class="menu-item"><a href="{% url 'history' %}">История посещений</a></div>
         </div>
     </div>
-
-    <!-- <footer>
-        <div class="footer-title">Контакты для связи</div>
-        <div class="contact-links">
-            <a href="mailto:support@example.com" class="contact-link">Email</a>
-            <a href="tel:+1234567890" class="contact-link">Телефон</a>
-            <a href="https://t.me/example" class="contact-link">Telegram</a>
-            <a href="https://vk.com/example" class="contact-link">VK</a>
-        </div>
-    </footer> -->
 
     <script>
         document.getElementById('image-upload').addEventListener('change', function(event) {
@@ -86,5 +78,11 @@
             }
         }
     </script>
+
+    </div> <!-- Закрывающий тег для .profile-container -->
+
+    <div class="start-page-button">
+        <a href="{% url 'index' %}" class="button">На стартовую страницу</a>
+    </div>
 </body>
 </html>

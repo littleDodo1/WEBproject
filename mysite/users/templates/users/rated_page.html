@@ -1,11 +1,15 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отложенное | FlickPage</title>
+    <title>Оценённое | FlickPage</title>
     <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
     <link rel="stylesheet" href="{% static 'users/css/watchlist.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +27,7 @@
           <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
         </a>
     </header>
-    <h2>Вы хотели посмотреть или прочитать позже</h2>
+    <h2>Фильмы и книги, которые вы оценили</h2>
     <div class="container">
         {% for item in data %}
             {% if item.type == 'movie' %}
@@ -48,5 +52,10 @@
             {% endif %}
         {% endfor %}
     </div>
+</body>
+</html></title>
+</head>
+<body>
+
 </body>
 </html>

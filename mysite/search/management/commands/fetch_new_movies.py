@@ -15,7 +15,7 @@ class Command(BaseCommand):
             url="https://api.kinopoisk.dev/v1.4/movie?page=1&limit=50&notNullFields=name&notNullFields=poster.url"
                 "&notNullFields=description&type=movie&isSeries=false&status=&year=2025&votes.kp=1000-6666666&votes"
                 ".imdb=1000-6666666",
-            headers={"X-API-KEY": os.getenv('API_KEY')},
+            headers = {"X-API-KEY": os.getenv('API_KEY')},
         )
         data = response.json()["docs"]
 

@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои отзывы | FlickPage</title>
+    <link rel="stylesheet" href="{% static 'users/css/reviews.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'users/img/minilogo.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <a href="{% url 'search:browse' %}">
+            <img src="{% static 'search/img/logo.png' %}" height="55" alt="Лого">
+        </a>
+    </div>
+    <a href="{% url 'profile' %}" class="user-icon">
+        <img src="{% static 'search/img/pfp.png' %}" height="55" alt="Личный кабинет">
+    </a>
+</header>
+
+<div class="container">
+    <h1>Мои отзывы</h1>
+    {% if not data %}
+        Вы ещё не оставили ни одного отзыва 😔
+    {% endif %}
+    {% for item in data %}
+    {% if item.type == 'movie' %}
+    <a href="{% url 'search:film_page' item.data.id %}">
+    <div class="card" style="">
+        <div class="poster">
+            <img src="{{ item.data.poster.url }}" alt="Movie Poster" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div style="flex-grow: 1; color: white;">
+            <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">{{ item.data.name }}</div>
+            <div style="font-size: 16px; margin-bottom: 10px;">
+                {% if item.rating  %}
+                Моя оценка: <strong>{{ item.rating }}/10</strong>
+                {% endif %}
+            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Мой отзыв</div>
+            <div style="background-color: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; min-height: 60px;">
+                {{item.review}}
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <a href="{% url 'add_review' 'movie' item.data.id %}" style="padding: 6px 12px; background-color: #eee; color: black; border-radius: 6px; font-size: 14px;">Редактировать</a>
+                <div style="padding: 6px 12px; background-color: #eee; color: black; border-radius: 6px; font-size: 14px;">
+                    <form method="post" action="{% url 'reviews' %}">
+                        <input type="hidden" name="item_type" value="movie">
+                        <input type="hidden" name="item_id" value="{{ item.data.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn" name="action" value="delete">
+                            Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div style="font-size: 16px; margin-top: 15px;">
+                Дата написания отзыва: {{ item.review_date }}
+            </div>
+            {% if item.watch_date %}
+            <div style="font-size: 16px; margin-top: 7px;">
+                Дата просмотра: {{ item.watch_date }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </a>
+    {% endif %}
+    {% if item.type == 'book' %}
+    <div href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
+    <div class="card" style="">
+        <div class="poster">
+            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Movie Poster" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div style="flex-grow: 1; color: white;">
+            <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">{{ item.data.0.title }}</div>
+            <div style="font-size: 16px; margin-bottom: 10px;">
+                {% if item.rating  %}
+                Моя оценка: <strong>{{ item.rating }}/10</strong>
+                {% endif %}
+            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Мой отзыв</div>
+            <div style="background-color: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; min-height: 60px;">
+                {{item.review}}
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <a href="{% url 'add_review' 'book' item.data.0.key|cut:'/works/' %}" style="padding: 6px 12px; background-color: #eee; color: black; border-radius: 6px; font-size: 14px;">Редактировать</a>
+                <div style="padding: 6px 12px; background-color: #eee; color: black; border-radius: 6px; font-size: 14px;">
+                    <form method="post" action="{% url 'reviews' %}">
+                        <input type="hidden" name="item_id" value="{{ item.data.0.key|cut:'/works/' }}">
+                        <input type="hidden" name="item_type" value="book">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn" name="action" value="delete">
+                            Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div style="font-size: 16px; margin-top: 15px;">
+                Дата написания отзыва: {{ item.review_date }}
+            </div>
+            {% if item.watch_date %}
+            <div style="font-size: 16px; margin-top: 7px;">
+                Дата прочтения: {{ item.watch_date }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </a>
+    {% endif %}
+    {% endfor %}
+</div>
+
+</body>
+</html>
