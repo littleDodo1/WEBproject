@@ -20,6 +20,11 @@
     </div>
 
     <div class="container">
+        <div class="back-buttons">
+            <a href="{% url 'search:browse' %}" class="back-btn">Обратно в каталог</a>
+            <span class="separator">◇</span>
+            <a href="{% url 'recommendations_movies' %}" class="back-btn">Обратно к рекомендациям</a>
+        </div>
         <div class="movie-header">
             <img class="movie-poster" src="{{ movie.poster.url }}" alt="Постер фильма">
             <div class="movie-info">

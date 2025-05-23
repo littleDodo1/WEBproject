@@ -31,7 +31,7 @@ def ask_gigachat(prompt, access_token):
     }
 
     json_data = {
-        "model": "GigaChat:latest",
+        "model": "GigaChat:Max",
         "messages": [
             {"role": "user", "content": prompt}
         ]

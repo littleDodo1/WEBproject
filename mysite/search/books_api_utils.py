@@ -8,10 +8,12 @@ def get_cached_book(key):
     book_entry = (CachedBooks.objects.filter(book_data__key=key).first() or 
                  CachedBooks.objects.filter(book_data__key=f"/works/{key}").first())
     if book_entry:
-        return book_entry.book_data, book_entry.content, book_entry.substance, book_entry.covers
+        cover_id = book_entry.covers[0] if book_entry.covers and isinstance(book_entry.covers, list) else None
+        return book_entry.book_data, book_entry.content, book_entry.substance, cover_id
+    
     book_entry = BookCollections.objects.filter(book_data__key=key).first()
     if book_entry:
-        return book_entry.book_data, book_entry.content, None
+        return book_entry.book_data, book_entry.content, None, None
     
     return None, None, None, None
 

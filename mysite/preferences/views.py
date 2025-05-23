@@ -90,7 +90,7 @@ def attach_movies_to_recommendations(recommendations):
 def attach_books_to_recommendations(recommendations):
     for rec in recommendations:
         text = rec.get("text", "")
-        match = re.search(r'[«"](.+?)[»"]', text)
+        match = re.search(r'[«"*](.+?)[»"*]', text)
         if match:
             title = match.group(1)
         else:
@@ -116,24 +116,25 @@ def attach_books_to_recommendations(recommendations):
             access_token = get_access_token()
             if access_token:
                 promptA = (
-                    "Ты - помощник по генерации краткого содержания книг.\n\n"
-                    "Напиши без комментариев и лишних слов 6 предложений о книге.\n"
-                    f"Название книги: {title}"
-                )
+                    "Ты — помощник по генерации краткого содержания книг.\n\n"
+                    "Напиши 6 предложений о книге на русском языке.\n"
+                    f"Название книги (переведи на русский, если нужно): {title}\n"
+                    "Без комментариев и лишних слов."
+                )  
                 summary = ask_gigachat(promptA, access_token)
-
                 promptB = (
-                    "Ты - помощник по генерации содержания книг.\n\n"
-                    "Напиши без комментариев и лишних слов 10–15 предложений о книге.\n"
-                    f"Название книги: {title}"
+                    "Ты — помощник по генерации содержания книг.\n\n"
+                    "Напиши 10–15 предложений о книге на русском языке.\n"
+                    f"Название книги (переведи на русский, если нужно): {title}\n"
+                    "Без комментариев и лишних слов."
                 )
                 substance = ask_gigachat(promptB, access_token)
             else:
                 summary = ""
                 substance = ""
 
-            covers = book_data.get("covers", [])
-            cache_book(book_data, content=summary, substance=substance, covers=covers)
+            cover_id = book_data.get("cover_i")
+            cache_book(book_data, content=summary, substance=substance, covers=cover_id)
 
         rec["book"] = book_data
         if book_data and isinstance(book_data, dict):
@@ -214,19 +215,19 @@ def recommendations_books(request):
                 'book_authors': [author.name for author in preference.favorite_book_authors.all()],
             }
             prompt_books = (
-                "Ты — помощник по подбору книг.\n\n"
-                "На основе предпочтений пользователя:\n"
-                f"Жанры книг: {', '.join(preferences_data.get('book_genres', []))}\n"
-                f"Любимые страны: {', '.join(preferences_data.get('countries', []))}\n"
-                f"Десятилетия книг: {', '.join(preferences_data.get('book_decades', []))}\n"
-                f"Любимые авторы: {', '.join(preferences_data.get('book_authors', []))}\n"
-                f"Также недавно пользователь смотрел:\n"
-                f"Жанры: {', '.join(preference.last_viewed_book_genres[-3:])}\n"
-                f"Авторы: {', '.join(preference.last_viewed_authors[-3:])}\n\n"
-                "Порекомендуй 5 книг.\n"
-                "Просто напиши список книг в формате:\n"
-                "1. Название книги — Автор\n"
-                "Без комментариев и пояснений."
+                "You are a English book recommendation assistant.\n\n"
+                "Based on user preferences:\n"
+                f"Book genres: {', '.join(preferences_data.get('book_genres', []))}\n"
+                f"Favorite countries: {', '.join(preferences_data.get('countries', []))}\n"
+                f"Book decades: {', '.join(preferences_data.get('book_decades', []))}\n"
+                f"Favorite authors: {', '.join(preferences_data.get('book_authors', []))}\n"
+                f"Recently viewed:\n"
+                f"Genres: {', '.join(preference.last_viewed_book_genres[-3:])}\n"
+                f"Authors: {', '.join(preference.last_viewed_authors[-3:])}\n\n"
+                "Recommend 5 books strictly in English.\n"
+                "Provide only the list in the following format:\n"
+                '1. "Book Title" — Author\n'
+                "Do not add any comments or explanations."
             )
             recommendations = ask_gigachat(prompt_books, access_token)
             preference.saved_book_recommendations = recommendations
@@ -240,6 +241,7 @@ def recommendations_books(request):
             if line.strip():
                 recommendations_list.append({'text': line.strip()})
         recommendations_list = attach_books_to_recommendations(recommendations_list)
+    print(recommendations_list)
     return render(request, 'preferences/recommendations_books.html', {
         'recommendations': recommendations_list,
         'preference': preference,

@@ -138,7 +138,7 @@ def film_page(request, kp_id):
 
 @login_required(login_url='login')
 def book_page(request, key):
-    book, summary, substance, covers = get_cached_book(key)
+    book, summary, substance, cover_id = get_cached_book(key)
     if not book:
         book = fetch_single_book(key)
         title = book['title'] if isinstance(book, dict) else book.title
@@ -159,9 +159,8 @@ def book_page(request, key):
             else:
                 summary = ""
                 substance = ""  
-            if book.get("covers"):
-                covers = book.get("covers")
-            cache_book(book, content=summary, substance=substance, covers=covers)
+            cover_id = book.get("cover_i")
+            cache_book(book, content=summary, substance=substance, covers=[cover_id] if cover_id else [])
         
     genres = book.get("subjects", [])[:5] if book else []
     authors = book.get("author_name", []) if book else []
@@ -223,7 +222,7 @@ def book_page(request, key):
     History.objects.create(user=request.user, item_type="book", item_id=key)
     if History.objects.filter(user=request.user).count() > 60:
         History.objects.filter(user=request.user).order_by("id").first().delete()
-
+    print(book)
     return render(request, 'search/book_page.html', {
         'book': book,
         'genres': genres,
@@ -235,7 +234,7 @@ def book_page(request, key):
         'data': data,
         'summary': summary,
         'substance': substance,
-        'covers': covers
+        'cover_id': cover_id
     })
 
 @login_required
