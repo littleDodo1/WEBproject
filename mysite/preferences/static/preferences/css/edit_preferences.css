@@ -9,6 +9,12 @@
     color: #f0f0f0;
 }
 
+.edit-container h2 {
+    margin: 30px;
+    text-align: center;
+    font-weight: 400;
+}
+
 .edit-title {
     text-align: center;
     color: #d95401;

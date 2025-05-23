@@ -23,7 +23,7 @@
         <div class="movie-header">
             <img class="movie-poster" src="https://covers.openlibrary.org/b/id/{{ covers.0 }}-L.jpg" alt="Обложка книги">
             <div class="movie-info">
-                <h1>{{book.0.title}}</h1>
+                <h1>{{book.title}}</h1>
                 {% if book.subject_times.0 %}
                     <p>{{ book.subject_times.0 }}</p>
                 {% endif %}
@@ -75,7 +75,7 @@
         </div>
         <div class="add-review-button">
             {% if not is_reviewed %}
-                <a href="{% url 'add_review' 'book' book.0.key|cut:'/works/' %}" class="btn">Добавить отзыв</a>
+                <a href="{% url 'add_review' 'book' book.key|cut:'/works/' %}" class="btn">Добавить отзыв</a>
             {% endif %}
             {% if is_reviewed %}
                 <a href="{% url 'reviews' %}" class="btn">Просмотреть в дневнике</a>

@@ -1,9 +1,18 @@
+*{
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
 body {
-    font-family: 'Jost', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    color: #333;
+  margin: 0;
+  padding: 20px;
+  background-color: #f9f9f9;
+  background-image: url("img/profile_fon.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
 }
 
 .header {
@@ -11,8 +20,6 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container {
@@ -33,7 +40,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px 15px;
-    background-color: #6c757d;
+    background-color: #FF8800;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -41,11 +48,11 @@ body {
 }
 
 .back-btn:hover {
-    background-color: #5a6268;
+    background-color: #e68619;
 }
 
 .substance-content {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.85);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -60,7 +67,8 @@ body {
 
 .content-text {
     line-height: 1.6;
-    font-size: 16px;
+    font-size: 20px;
+    color: #333;
 }
 
 .no-content {

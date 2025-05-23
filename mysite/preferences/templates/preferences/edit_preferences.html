@@ -18,9 +18,6 @@
         <div class="logo_1">
             <a href="{% url 'search:browse' %}"><img src="{% static 'users/img/logo.png' %}" height="55" alt="Лого"></a>
         </div>
-        <nav class="site-links">
-            <a href="{% url 'about' %}">О нашей команде</a>
-        </nav>
         <div class="profile_pic">
             <a href="{% url 'profile' %}"><img src="{% static 'users/img/pfp.png' %}" width="60" alt="Иконка профиля"></a>
         </div>
@@ -29,6 +26,7 @@
     <main class="main">
         <div class="edit-container">
             <h1 class="edit-title">Редактировать предпочтения</h1>
+            <h2>Заполните все поля выбора</h2>
 
             <form method="post" class="preferences-form">
                 {% csrf_token %}

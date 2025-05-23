@@ -95,6 +95,11 @@ button:hover {
     background-color: #FF8800;
     color: white;
 }
+
+#yearRangeSlider {
+    padding: 0 8px; /* Добавлен внутренний отступ */
+}
+
 #yearRangeSlider .noUi-connect {
     background: #FF8800; /* Красная линия между бегунками */
 }
@@ -104,15 +109,17 @@ button:hover {
     border: none;
     box-shadow: none;
     height: 4px; /* Тонкая линия */
+    padding-right: 4px;
 }
 
 #yearRangeSlider .noUi-handle {
     background: white; /* Белые бегунки */
     border: 2px solid #999; /* Серые обводки */
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    top: -7px; /* Чтобы бегунок был по центру линии */
+    width: 16px;
+    height: 16px;
+    top: -6px; /* Чтобы бегунок был по центру линии */
+    right: -8px;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
     cursor: pointer;
 }
@@ -131,3 +138,7 @@ button:hover {
     font-size: 14px;
     border-radius: 3px;
     padding:
+
+#yearRangeSlider .noUi-handle:last-child {
+    right: -8px; /* Фикс для правого бегунка */
+}
