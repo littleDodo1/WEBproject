@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .forms import PreferenceForm
 from .models import Preference
-from search.models import CachedBooks, CachedMovies
 from django.contrib.auth.decorators import login_required
-import requests, urllib3, uuid, os, re
+import re
 from search.movie_api_utils import (
     fetch_kinopoisk_movie,
     get_cached_movie,
@@ -19,14 +18,12 @@ from search.books_api_utils import (
     sort_books,
     get_cached_book, fetch_single_book, cache_book
 )
-from dotenv import load_dotenv
+from preferences.api_gigachat_utils import ask_gigachat, get_access_token
 
-
-load_dotenv()
 
 @login_required(login_url='login')
 def profile_view(request):
-    return render(request, 'profile.html')
+    return render(request, 'users/profile.html')
 
 @login_required(login_url='login')
 def edit_preferences(request):
@@ -55,43 +52,8 @@ def view_preferences(request):
 
     return render(request, 'preferences/view_preferences.html', {'preference': preference})
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def get_access_token():
-    url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-    payload = {'scope': 'GIGACHAT_API_PERS'}
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json',
-        'RqUID': str(uuid.uuid4()),
-        'Authorization': f"Basic {os.getenv('API_AUTH_TOKEN')}"  # Токен
-    }
 
-    response = requests.post(url, headers=headers, data=payload)
-    if response.status_code == 200:
-        return response.json().get('access_token')
-    else:
-        return None
-
-def ask_gigachat(prompt, access_token):
-    url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
-
-    headers = {
-        'Accept': 'application/json',
-        'Authorization': f'Bearer {access_token}'
-    }
-
-    json_data = {
-        "model": "GigaChat:latest",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
-
-    response = requests.post(url, headers=headers, json=json_data)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content']
-    return "Oops, нейросеть не смогла найти ответ..."
 def attach_movies_to_recommendations(recommendations):
     for rec in recommendations:
         text = rec.get("text", "")
@@ -102,8 +64,6 @@ def attach_movies_to_recommendations(recommendations):
             title = text.split("—")[0].split("(")[0].strip()
             title = " ".join(title.split()[:3])
 
-        #print(f"Название: {title}") #DEBUG
-
         search_results = fetch_movie_search(title, years="", country="", genres="")
         if search_results:
             movie_data = search_results[0]
@@ -112,23 +72,18 @@ def attach_movies_to_recommendations(recommendations):
             if cached:
                 rec["movie"] = cached
                 rec["movie_id"] = cached.get('id')
-                #print(f"Найден в кеше {cached.get('name')}") #DEBUG
             else:
                 full_data = fetch_kinopoisk_movie(kp_id)
-                #print(f"полные данные\n{full_data}")
                 if full_data:
                     cache_movie(full_data)
                     rec["movie"] = full_data
                     rec["movie_id"] = full_data.get('id')
-                    #print(f"Найден через API и закэширован {full_data.get('name')}") #DEBUG
                 else:
                     rec["movie"] = None
                     rec["movie_id"] = None
-                    #print(f"Ошибка при получении данных по ID {kp_id}") #DEBUG
         else:
             rec["movie"] = None
             rec["movie_id"] = None
-            #print(f"Не найден в кеше и API {title}") #DEBUG
 
     return recommendations
 def attach_books_to_recommendations(recommendations):
@@ -140,62 +95,58 @@ def attach_books_to_recommendations(recommendations):
         else:
             title = text.split("—")[0].split("(")[0].strip()
             title = " ".join(title.split()[:3])
-        #print(title) #DEBUG
-        #print(f"Поиск {title}") #DEBUG
+
+        rec["book"] = None
+        rec["book_key"] = None
+        rec["covers"] = None
+
         search_results = fetch_books_search(title, genres="")
-        if search_results:
-            api_book_data = search_results[0]
-            key = api_book_data.get('key', '')
+        if not search_results:
+            continue
 
-            book_data, content, substance = get_cached_book(key)
+        api_book_data = search_results[0]
+        key = api_book_data.get('key', '')
 
-            if book_data:
-                rec["book"] = book_data
-                rec["summary"] = content
-                rec["substance"] = substance
-                key = book_data.get('key', '')
-                if key.startswith('/works/'):
-                    rec["book_key"] = key.replace('/works/', '')
-                else:
-                    rec["book_key"] = key
-                #print(f"Найден в кеше {book_data.get('title')}") #DEBUG
+        book_data, summary, substance, covers = get_cached_book(key)
+
+        if not book_data:
+            book_data = api_book_data
+
+            access_token = get_access_token()
+            if access_token:
+                promptA = (
+                    "Ты - помощник по генерации краткого содержания книг.\n\n"
+                    "Напиши без комментариев и лишних слов 6 предложений о книге.\n"
+                    f"Название книги: {title}"
+                )
+                summary = ask_gigachat(promptA, access_token)
+
+                promptB = (
+                    "Ты - помощник по генерации содержания книг.\n\n"
+                    "Напиши без комментариев и лишних слов 10–15 предложений о книге.\n"
+                    f"Название книги: {title}"
+                )
+                substance = ask_gigachat(promptB, access_token)
             else:
-                access_token = get_access_token()
-                if access_token:
-                    promptA = (
-                        "Ты - помощник по генерации краткого содержания книг.\n\n"
-                        "Напиши без каких либо комментариев, благодарения, вопросов от тебя 6 предложений о книге.\n"
-                        "Мне нужно только описание без лишних слов, также учитывай что в названиях могут быть литературные слова\n"
-                        f"Название книги: {title}"
-                    )
-                    summary = ask_gigachat(promptA, access_token)
-                    promptB = (
-                        "Ты - помощник по генерации содержания книг.\n\n"
-                        "Напиши без каких либо комментариев, благодарения, вопросов от тебя 10-15 предложений о книге.\n"
-                        f"Название книги: {title}"
-                    )
-                    substance = ask_gigachat(promptB, access_token)   
-                else:
-                    summary = ""
-                    substance = ""  
-                
-                cache_book(api_book_data, content=summary, substance=substance)
-                rec["book"] = api_book_data
-                rec["summary"] = summary
-                key = api_book_data.get('key', '')
-                if key.startswith('/works/'):
-                    rec["book_key"] = key.replace('/works/', '')
-                else:
-                    rec["book_key"] = key
-                #print(f"Найден через API и закэширован {api_book_data.get('title')}") #DEBUG
-        else:
-            rec["book"] = None
-            rec["summary"] = None
-            rec["book_key"] = None
-            rec["substance"] = None
-            #print(f"Не найден в кеше и API {title}") #DEBUG
-    #print(f"prefer   {substance}\n\n") #DEBUG
+                summary = ""
+                substance = ""
+
+            covers = book_data.get("covers", [])
+            cache_book(book_data, content=summary, substance=substance, covers=covers)
+
+        rec["book"] = book_data
+        if book_data and isinstance(book_data, dict):
+            if not rec["covers"]:
+                rec["covers"] = book_data.get("covers", [None])[0]
+            key = book_data.get("key", "")
+            if key.startswith("/works/"):
+                rec["book_key"] = key.replace("/works/", "")
+            else:
+                rec["book_key"] = key
     return recommendations
+
+
+
 @login_required(login_url='login')
 def recommendations_movies(request):
     try:

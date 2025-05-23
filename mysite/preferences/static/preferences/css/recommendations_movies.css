@@ -1,0 +1,99 @@
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: rgba(0, 0, 0, 0.7867);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    h1{
+        color: #fff;
+    }
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+    font-family: 'Jost', sans-serif;
+}
+
+.recommendation-list {
+    font-size: 18px;
+    color: antiquewhite;
+    line-height: 1.6;
+    margin: 20px 0;
+}
+
+.recommendation-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #cfcdce;
+}
+
+.book-link {
+    color: #d95401;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.book-link:hover {
+    color: #d95401;
+    text-decoration: underline;
+}
+
+.generate-form {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.generate-button {
+    background-color: #d95401;
+    color: white;
+    padding: 12px 24px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+    transition: all 0.3s;
+    font-family: 'Jost', sans-serif;
+}
+
+.generate-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+}
+
+.updated-date {
+    text-align: center;
+    color: #ae1212;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-link a {
+    color: #d95401;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.back-link a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.no-recommendations {
+    text-align: center;
+    color: #777;
+    font-size: 18px;
+    margin: 30px 0;
+}
+.section h2{
+    color: #fff;
+}

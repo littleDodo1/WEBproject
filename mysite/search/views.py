@@ -5,9 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from users.models import *
 from preferences.views import ask_gigachat, get_access_token
 from .models import *
-from preferences.models import Preference, MovieGenre, MovieDirector, Country, BookAuthor, BookGenre
-
-import requests
+from preferences.models import Preference
 
 from .movie_api_utils import (
     fetch_kinopoisk_movie,
@@ -100,27 +98,33 @@ def film_page(request, kp_id):
 
 @login_required(login_url='login')
 def book_page(request, key):
-    book, summary, substance = get_cached_book(key)
+    book, summary, substance, covers = get_cached_book(key)
     if not book:
         book = fetch_single_book(key)
+        title = book['title'] if isinstance(book, dict) else book.title
         if book:
-            summary = book.get("description", "")
-            if isinstance(summary, dict):
-                summary = summary.get("value", "")
             access_token = get_access_token()
             if access_token:
-                prompt = (
+                promptA = (
+                    "Ты - помощник по генерации краткого содержания книг.\n\n"
+                    "Напиши без каких либо комментариев, благодарения, вопросов от тебя 6 предложений о книге.\n"
+                    "Мне нужно только описание без лишних слов, также учитывай что в названиях могут быть литературные слова\n"
+                    f"Название книги: {title}"                    )
+                summary = ask_gigachat(promptA, access_token)
+                promptB = (
                     "Ты - помощник по генерации содержания книг.\n\n"
-                    f"Напиши краткое содержание книги '{book.get('title', '')}' "
-                    "на русском языке, 10-15 предложений.\n"
-                )
-                substance = ask_gigachat(prompt, access_token)
+                    "Напиши без каких либо комментариев, благодарения, вопросов от тебя 10-15 предложений о книге.\n"
+                    f"Название книги: {title}"                      )
+                substance = ask_gigachat(promptB, access_token)   
             else:
-                substance = ""
-            cache_book(book, summary, substance)
+                summary = ""
+                substance = ""  
+            if book.get("covers"):
+                covers = book.get("covers")
+            cache_book(book, content=summary, substance=substance, covers=covers)
         
     genres = book.get("subjects", [])[:5] if book else []
-    authors = [author.get("key", "") for author in book.get("authors", [])] if book else []
+    authors = book.get("author_name", []) if book else []
 
     try:
         preference = Preference.objects.get(user=request.user)
@@ -162,7 +166,6 @@ def book_page(request, key):
     if History.objects.count() >= 100:
         History.objects.order_by("id").first().delete()
     History.objects.update_or_create(user=request.user, item_type="book", item_id=key)
-    print(substance)
     return render(request, 'search/book_page.html', {
             'book': book,
             'genres': genres,
@@ -172,12 +175,13 @@ def book_page(request, key):
             'is_reviewed': is_reviewed,
             'is_wished': is_wished,
             'summary': summary,
-            'substance': substance
+            'substance': substance,
+            'covers': covers
         })
 
 @login_required
 def book_substance_view(request, book_key):
-    book_data, content, substance = get_cached_book(f"/works/{book_key}")
+    book_data, content, substance, _ = get_cached_book(f"/works/{book_key}")
     
     context = {
         'title': book_data.get('title', 'Без названия'),
