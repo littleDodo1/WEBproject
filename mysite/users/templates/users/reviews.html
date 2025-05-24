@@ -31,7 +31,7 @@
     {% for item in data %}
     {% if item.type == 'movie' %}
     <a href="{% url 'search:film_page' item.data.id %}">
-    <div class="card" style="">
+    <div class="card">
         <div class="poster">
             <img src="{{ item.data.poster.url }}" alt="Movie Poster" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
@@ -72,10 +72,14 @@
     </a>
     {% endif %}
     {% if item.type == 'book' %}
-    <div href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
+    <a href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
     <div class="card" style="">
         <div class="poster">
-            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Movie Poster" style="width: 100%; height: 100%; object-fit: cover;">
+            {% if item.data.0.cover_i %}
+                <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.cover_i }}-M.jpg" alt="Обложка не найдена :(">
+            {% else %}
+                <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+            {% endif %}
         </div>
         <div style="flex-grow: 1; color: white;">
             <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">{{ item.data.0.title }}</div>
@@ -115,6 +119,5 @@
     {% endif %}
     {% endfor %}
 </div>
-
 </body>
 </html>

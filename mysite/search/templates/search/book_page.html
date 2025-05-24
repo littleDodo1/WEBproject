@@ -20,13 +20,17 @@
     </div>
 
     <div class="container">
-        <div class="back-buttons">
-            <a href="{% url 'search:browse' %}" class="back-btn">Обратно в каталог</a>
-            <span class="separator">◇</span>
-            <a href="{% url 'recommendations_books' %}" class="back-btn">Обратно к рекомендациям</a>
-        </div>
         <div class="movie-header">
+            {% if book.covers.0 %}
+            <img class="movie-poster" src="https://covers.openlibrary.org/b/id/{{ book.covers.0 }}-L.jpg" alt="Обложка книги">
+            {% elif book.cover_i %}
             <img class="movie-poster" src="https://covers.openlibrary.org/b/id/{{ book.cover_i }}-L.jpg" alt="Обложка книги">
+            {% else %}
+            <img class="movie-poster" src="https://sun9-78.userapi.com/impg/yyWM7GvBjLtUXQ6mX8KUXPhQ_YLEWW2xWGpVWg/H1TnNhZMDC0.jpg?size=404x539&quality=95&sign=e313f391fc2d6e1d3fb91b1793bb0b2e&type=album" alt="Обложка книги">
+            {% endif %}
+            <a href="{% url 'recommendations_books' %}" class="recommendation-btn">
+                Перейти к рекомендациям
+            </a>
             <div class="movie-info">
                 <h1>{{book.title}}</h1>
                 {% if book.subject_times.0 %}

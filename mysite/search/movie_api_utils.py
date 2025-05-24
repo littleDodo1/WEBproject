@@ -42,14 +42,14 @@ def cache_query(query, years, country, genres, movie_data):
 def fetch_movie_search(query, years, country, genres):
     if years == "":
         url = f"https://api.kinopoisk.dev/v1.4/movie/search"
-        params = {"page": 1, "limit": 18, "query": query}
+        params = {"page": 1, "limit": 18, "query": query, "notNullFields": ["poster.url", "description", "name"]}
     else:
         url = "https://api.kinopoisk.dev/v1.4/movie"
         params = {
             "genres.name": genres,
             "limit": 120,
             "page": 1,
-            "notNullFields": ["poster.url", "description"],
+            "notNullFields": ["poster.url", "description", "name"],
             "year": years,
             "countries.name": country,
         }
