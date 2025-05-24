@@ -1,5 +1,5 @@
 from django import forms
-from .models import Preference, MovieGenre, BookGenre, Country, Decade, BookAuthor, MovieDirector
+from .models import Preference, MovieGenre, BookGenre, Country, MovieDecade, BookDecade, BookAuthor, MovieDirector
 
 class PreferenceForm(forms.ModelForm):
     favorite_movie_genres = forms.ModelMultipleChoiceField(
@@ -18,12 +18,12 @@ class PreferenceForm(forms.ModelForm):
         label="Любимые страны"
     )
     favorite_movie_decades = forms.ModelMultipleChoiceField(
-        queryset=Decade.objects.all(),
+        queryset=MovieDecade.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label="Любимые десятилетия фильмов"
     )
     favorite_book_decades = forms.ModelMultipleChoiceField(
-        queryset=Decade.objects.all(),
+        queryset=BookDecade.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label="Любимые десятилетия книг"
     )

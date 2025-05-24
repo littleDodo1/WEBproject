@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Preference, MovieGenre, BookGenre, Country, Decade, MovieDirector, BookAuthor
+from .models import Preference, MovieGenre, BookGenre, Country, MovieDecade, BookDecade, MovieDirector, BookAuthor
 
 @admin.register(BookGenre)
 class BookGenreAdmin(admin.ModelAdmin):
@@ -31,12 +31,18 @@ class CountryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     ordering = ('name',)
 
-@admin.register(Decade)
-class DecadeAdmin(admin.ModelAdmin):
+@admin.register(MovieDecade)
+class MovieDecadeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     search_fields = ('name',)
     ordering = ('name',)
 
+@admin.register(BookDecade)
+class MovieDecadeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ('name',)
+    ordering = ('name',)
+    
 @admin.register(Preference)
 class PreferenceAdmin(admin.ModelAdmin):
     list_display = ('id', 'user')

@@ -19,12 +19,18 @@ class Country(models.Model):
     def __str__(self):
         return self.name
 
-class Decade(models.Model):
+class BookDecade(models.Model):
     name = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name
+    
+class MovieDecade(models.Model):
+    name = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.name
+    
 class BookAuthor(models.Model):
     name = models.CharField(max_length=100)
 
@@ -43,8 +49,8 @@ class Preference(models.Model):
     favorite_movie_genres = models.ManyToManyField(MovieGenre, related_name='movie_users')
     favorite_book_genres = models.ManyToManyField(BookGenre, related_name='book_users')
     favorite_countries = models.ManyToManyField(Country, related_name='country_users')
-    favorite_movie_decades = models.ManyToManyField(Decade, related_name='movie_decade_users')
-    favorite_book_decades = models.ManyToManyField(Decade, related_name='book_decade_users')
+    favorite_movie_decades = models.ManyToManyField(MovieDecade, related_name='movie_decade_users')
+    favorite_book_decades = models.ManyToManyField(BookDecade, related_name='book_decade_users')
     favorite_book_authors = models.ManyToManyField(BookAuthor, related_name='book_authors_users')
     favorite_movie_directors = models.ManyToManyField(MovieDirector, related_name='movie_directors_users')
     saved_movie_recommendations = models.TextField(blank=True, null=True)
