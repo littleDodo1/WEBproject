@@ -222,7 +222,6 @@ def book_page(request, key):
     History.objects.create(user=request.user, item_type="book", item_id=key)
     if History.objects.filter(user=request.user).count() > 60:
         History.objects.filter(user=request.user).order_by("id").first().delete()
-    print(book)
     return render(request, 'search/book_page.html', {
         'book': book,
         'genres': genres,
@@ -281,15 +280,14 @@ def search_results(request):
         try:
             if not param_type:
                 data = get_object_or_404(CachedMovieQueries, query=query).movie_data
+                print(data)
             else:
                 data = get_object_or_404(CachedMovieQueries, years=years, country=country, genres=genres).movie_data
         except Http404:
             data = fetch_movie_search(query, years, country, genres)
             cache_query(query, years, country, genres, data)
 
-        print(genres)
         data = sort_movies(data, sort_by)
-        print(genres)
         return render(request, 'search/search_results.html', {"data": data})
 
     elif item_type == "book":

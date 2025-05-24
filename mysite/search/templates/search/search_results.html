@@ -83,7 +83,13 @@
                 <div class="grid-item">
                     <a href="{% url 'search:book_page' item.key|cut:'/works/' %}">
                         <div class="movie-card">
-                            <img src="https://covers.openlibrary.org/b/olid/{{ item.cover_edition_key }}-M.jpg" alt="Обложка не найдена :(">
+                            {% if item.cover_edition_key != None %}
+                                <img src="https://covers.openlibrary.org/b/olid/{{ item.cover_edition_key }}-M.jpg" alt="Обложка не найдена :(">
+                            {% elif item.cover_id %}
+                                <img src="https://covers.openlibrary.org/b/id/{{item.cover_id}}-M.jpg" alt="Обложка не найдена :(">
+                            {% else %}
+                                <img class="movie-poster" src="https://sun9-78.userapi.com/impg/yyWM7GvBjLtUXQ6mX8KUXPhQ_YLEWW2xWGpVWg/H1TnNhZMDC0.jpg?size=404x539&quality=95&sign=e313f391fc2d6e1d3fb91b1793bb0b2e&type=album" alt="Обложка книги">
+                            {% endif %}
                         </div>
                         <div class="movie-title">{{ item.title }}</div>
                         {% if type %}

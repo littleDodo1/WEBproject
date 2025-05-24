@@ -1,7 +1,10 @@
-body {
+* {
     font-family: "Jost", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+}
+
+body {
     margin: 0;
     padding: 0;
     background-image: url("img/profile_fon.webp");
@@ -52,6 +55,27 @@ body {
     display: flex;
     align-items: top;
     margin-bottom: 20px;
+    position: relative;
+}
+
+.recommendation-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #2F2F2F;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.recommendation-btn:hover {
+    background: #3F3F3F;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .movie-poster {

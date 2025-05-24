@@ -58,7 +58,11 @@
   <div class="container">
     <div class="movie-block">
       <a href="{% url 'search:book_page' book.0.key|cut:'/works/' %}">
-        <img class="poster" src="https://covers.openlibrary.org/b/id/{{ book.0.covers.0 }}-L.jpg" alt="Постер фильма">
+        {% if book.0.cover_i %}
+          <img src="https://covers.openlibrary.org/b/id/{{ book.0.cover_i }}-L.jpg" alt="Обложка не найдена :(">
+        {% else %}
+          <img src="https://covers.openlibrary.org/b/id/{{ book.0.covers.0 }}-L.jpg" alt="Обложка не найдена :(">
+        {% endif %}
         <div class="movie-title">{{ book.0.title }}</div>
       </a>
     </div>

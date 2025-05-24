@@ -1,9 +1,9 @@
 import requests, urllib3, uuid, os
 
-from dotenv import load_dotenv
+'''from dotenv import load_dotenv
 
 
-load_dotenv()
+load_dotenv()'''
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 def get_access_token():
@@ -16,7 +16,7 @@ def get_access_token():
         'Authorization': f"Basic {os.getenv('API_AUTH_TOKEN')}"
     }
 
-    response = requests.post(url, headers=headers, data=payload)
+    response = requests.post(url, headers=headers, data=payload, verify=False)
     if response.status_code == 200:
         return response.json().get('access_token')
     else:
@@ -37,7 +37,7 @@ def ask_gigachat(prompt, access_token):
         ]
     }
 
-    response = requests.post(url, headers=headers, json=json_data)
+    response = requests.post(url, headers=headers, json=json_data, verify=False)
     if response.status_code == 200:
         return response.json()['choices'][0]['message']['content']
     return "Oops, нейросеть не смогла найти ответ..."

@@ -85,7 +85,6 @@ def attach_movies_to_recommendations(recommendations):
         else:
             rec["movie"] = None
             rec["movie_id"] = None
-
     return recommendations
 def attach_books_to_recommendations(recommendations):
     for rec in recommendations:
@@ -241,7 +240,6 @@ def recommendations_books(request):
             if line.strip():
                 recommendations_list.append({'text': line.strip()})
         recommendations_list = attach_books_to_recommendations(recommendations_list)
-    print(recommendations_list)
     return render(request, 'preferences/recommendations_books.html', {
         'recommendations': recommendations_list,
         'preference': preference,

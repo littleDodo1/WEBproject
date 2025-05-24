@@ -1,12 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
+    <!DOCTYPE html>
+    <html lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оценённое | FlickPage</title>
@@ -29,6 +27,9 @@
     </header>
     <h2>Фильмы и книги, которые вы оценили</h2>
     <div class="container">
+        {% if not data %}
+        <h3>Вы ещё не оценили ни одного фильма или книги.</h3>
+        {% endif %}
         {% for item in data %}
             {% if item.type == 'movie' %}
             <div class="grid-item">
@@ -44,7 +45,13 @@
                 <div class="grid-item">
                     <a href="{% url 'search:book_page' item.data.0.key|cut:'/works/' %}">
                         <div class="movie-card">
+                            {% if item.data.0.cover_i %}
+                            <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.cover_i }}-M.jpg" alt="Обложка не найдена :(">
+                            {% elif item.data.0.covers %}
                             <img src="https://covers.openlibrary.org/b/id/{{ item.data.0.covers.0 }}-M.jpg" alt="Обложка не найдена :(">
+                            {% else %}
+                            <img class="movie-poster" src="https://sun9-78.userapi.com/impg/yyWM7GvBjLtUXQ6mX8KUXPhQ_YLEWW2xWGpVWg/H1TnNhZMDC0.jpg?size=404x539&quality=95&sign=e313f391fc2d6e1d3fb91b1793bb0b2e&type=album" alt="Обложка книги">
+                            {% endif %}
                         </div>
                         <div class="movie-title">{{ item.data.0.title }}</div>
                     </a>
