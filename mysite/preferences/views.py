@@ -58,7 +58,7 @@ def view_preferences(request):
 def attach_movies_to_recommendations(recommendations):
     for rec in recommendations:
         text = rec.get("text", "")
-        match = re.search(r"[«\"](.+?)[»\"]", text)
+        match = re.search(r"[«\"*](.+?)[»\"*]", text)
         if match:
             title = match.group(1)
         else:
